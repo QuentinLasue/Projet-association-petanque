@@ -12,6 +12,8 @@ function Entrainement(){
     const[numberPlayer, setNumberPlayer] = useState('');
     // variable ou l'on stock les joueurs de la partie
     const[players, setPlayers] = useState(JSON.parse(localStorage.getItem('players')) || []);
+    // variable si l'on veut des équipes de 3 joueurs
+    const[teamsOfThreePlayers,setTeamsOfThreePlayers] = useState(false)
     // variable pour affichage d'un message d'erreur et de succes
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
@@ -61,6 +63,10 @@ function Entrainement(){
                 setSuccess("");
             }
         }
+        
+        const handleSwitchChange = () => {
+            setTeamsOfThreePlayers(!teamsOfThreePlayers); // Inverse la valeur actuelle du switch
+        };
 
         useEffect(()=>{
             const getPlayer = async ()=>{
@@ -96,7 +102,7 @@ function Entrainement(){
         useEffect(()=>{
             localStorage.setItem('players', JSON.stringify(players))
         },[players])
-        
+
     return (
         <>
         <Container>
@@ -129,7 +135,20 @@ function Entrainement(){
                 </Col>
             </Row>
             <Row className="mb-3">
-                <Link to="/tirage">
+                <Col className="d-flex justify-content-center">
+                    <Form>
+                        <Form.Check 
+                        type="switch" 
+                        label="Activer les équipe de trois joueurs" 
+                        id="threePlayers"
+                        checked={teamsOfThreePlayers}
+                        onChange={handleSwitchChange}
+                        />
+                    </Form>
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Link to={`/tirage/${teamsOfThreePlayers}`}>
                     <Button variant="warning">Lancer le tirage des équipes</Button>
                 </Link>
             </Row>

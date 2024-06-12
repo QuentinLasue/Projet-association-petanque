@@ -16,7 +16,7 @@ function NavBar() {
                         <Image 
                             width="120"
                             height="60"
-                            src='logo.jpg'
+                            src='../logo.jpg'
                         />
                     </Link>
                 </Navbar.Brand>

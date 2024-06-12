@@ -12,7 +12,7 @@ function App() {
     
         <Routes>
           <Route index path="/" element={<Entrainement/>}></Route>
-          <Route path="/tirage" element={<Tirage/>}></Route>
+          <Route path="/tirage/:numberPlayerTeam" element={<Tirage/>}></Route>
         </Routes>
       </BrowserRouter>
     </>
