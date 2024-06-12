@@ -4,9 +4,6 @@ import { Button, Container, Form, InputGroup, Row, Table, Col } from "react-boot
 import { Link } from "react-router-dom";
 
 function Entrainement(){
-
-    // localStorage.setItem("players",JSON.stringify([]));
-
     // variable de l'input pour empécher de rentrer autres chose que des nombres
     const[inputValue, setInputValue] = useState('');
     const[numberPlayer, setNumberPlayer] = useState('');
@@ -78,7 +75,8 @@ function Entrainement(){
                             // On va cherche le nouveau joueurs 
                             const response = await axios.get(`http://localhost:5000/membres/${numberPlayer}`);
                             // On ajoute un champs  pour contenir les équipiers du jours
-                            const newPlayer = {...response.data[0], teammates:[]}
+                            console.log(response.data[0].numero);
+                            const newPlayer = {...response.data[0], teammates:[response.data[0].numero]}
                             // On met a jours la variable qui contient tous le groupe + le nouveau joueurs
                             setPlayers([...players, newPlayer]);
                             localStorage.setItem('players', JSON.stringify(players))

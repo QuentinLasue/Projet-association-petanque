@@ -39,7 +39,6 @@ function Tirage(){
    }
 
    const selectRandomPlayer = (player)=> {
-       
         // vérifie les coéquipiers
         const validTeammates = players;
         // Si le joueurs na pas été assigné encore
@@ -55,7 +54,7 @@ function Tirage(){
                 // on en selectionne un au hazard par son index
                 const randomTeammate = validTeammates[Math.floor(Math.random()*(validTeammates.length - 1))];
                 // Si le joueur trouvé n'est pas assigné a une équipe
-                if(!assignedPlayers.has(randomTeammate) && randomTeammate){
+                if(!assignedPlayers.has(randomTeammate)){
                     // on envoi le joueur dans une équipe et son coéquipier également
                     currentTeam.push(player);
                     currentTeam.push(players.find((player)=>player.numero === randomTeammate.numero))
@@ -64,7 +63,7 @@ function Tirage(){
                     assignedPlayers.add(players.find((player)=>player.numero === randomTeammate.numero));
                 } else {
                     // Si il ne reste qu'un joueur a assigné
-                    if(assignedPlayers.size == players.lenght - 1){
+                    if(assignedPlayers.size == players.length - 1){
                         const indexRandom = Math.floor(Math.random()*(teams.length - 1))
                         // On selectionne une équipe au hazard et on vérifie si le jouer peut être avec ses joueurs
                             const randomTeam = teams[indexRandom];
@@ -104,7 +103,7 @@ function Tirage(){
                     assignedPlayers.add(players.find((player)=>player.numero === randomTeammate.numero));
                 } else {
                     // Si il ne reste qu'un joueur a assigné
-                    if(assignedPlayers.size == players.lenght - 1){
+                    if(assignedPlayers.size == players.length - 1){
                         const indexRandom = Math.floor(Math.random()*(teams.length - 1))
                         // On selectionne une équipe au hazard
                         const randomTeam = teams[indexRandom];
@@ -119,20 +118,6 @@ function Tirage(){
             }
         }
    }
-
-//    // Formations des  équipes 
-//    for (const player of players){
-//     if(currentTeam.length < teamSize){
-//          selectRandomPlayer(player);
-//         // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
-//         if(currentTeam.lenght == teamSize || assignedPlayers.size === players.length){
-//             teams.push(currentTeam);
-//             currentTeam = [];
-//         }else {
-//             selectRandomPlayer(player);
-//         }
-//     }
-//    }
    // Mélange les joueurs à la création du composant et constitution des équipes
    useEffect(()=>{
     const newTablePlayers = mixPlayers(players);
@@ -150,6 +135,7 @@ function Tirage(){
             }
         }
     }
+    console.log(players);
     console.log(teams);
    },[]); // Tableau vide pour que cela se produit qu'une fois lors du montage du composant
 
