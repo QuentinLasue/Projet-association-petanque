@@ -29,11 +29,13 @@ router.get("/", (request, response) => {
     if (error) {
       throw error;
     }
-    //   console.log("Data is : ", rows);
-    response.json(rows);
+    // Si l'élément n'existe pas
+    if (rows.length === 0) {
+      response.status(404).json({ error: "Membres non trouvé." });
+    } else {
+      response.json(rows);
+    }
   });
-  // Fermeture connection
-  //   connection.end();
 });
 // pour afficher un seul membre
 router.get("/:numero", (request, response) => {
@@ -46,12 +48,14 @@ router.get("/:numero", (request, response) => {
       if (error) {
         throw error;
       }
-      //   console.log("Data is : ", rows);
-      response.json(rows);
+      // Si l'élément n'existe pas
+      if (rows.length === 0) {
+        response.status(404).json({ error: "Membres non trouvé." });
+      } else {
+        response.json(rows);
+      }
     }
   );
-  // Fermeture connection
-  //   connection.end();
 });
 
 // Pour supprimer un membre

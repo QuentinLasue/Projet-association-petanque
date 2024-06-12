@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Container, Form, InputGroup, Row, Table } from "react-bootstrap";
+import { Button, Container, Form, InputGroup, Row, Table, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function Entrainement(){
 
@@ -48,21 +49,40 @@ function Entrainement(){
                 setSuccess("");
             }
         }
+        const handleDeleteAll = ()=>{
+            const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer toutes la liste de joueurs ?");
+
+            if(confirmation){
+                setPlayers([]);
+                setErreur("");
+                setSuccess("Liste effacée.");
+            }else{
+                setErreur("");
+                setSuccess("");
+            }
+        }
 
         useEffect(()=>{
             const getPlayer = async ()=>{
                 if(numberPlayer !== ""){
                     try{
-                        // On va cherche le nouveau joueurs 
-                        const response = await axios.get(`http://localhost:5000/membres/${numberPlayer}`);
-                        // On ajoute un champs  pour contenir les équipiers du jours
-                        const newPlayer = {...response.data[0], teammates:[]}
-                        // On met a jours la variable qui contient tous le groupe + le nouveau joueurs
-                        setPlayers([...players, newPlayer]);
-                        localStorage.setItem('players', JSON.stringify(players))
-                        setNumberPlayer("");
-                        setErreur("");
-                        setSuccess('Joueur ajoutée.')
+                        // Variable pour vérifier que le joueurs n'est pas  déjà dans la liste
+                        const playerExist = players.find((player)=>player.numero == numberPlayer);
+                        if(!playerExist){
+                            // On va cherche le nouveau joueurs 
+                            const response = await axios.get(`http://localhost:5000/membres/${numberPlayer}`);
+                            // On ajoute un champs  pour contenir les équipiers du jours
+                            const newPlayer = {...response.data[0], teammates:[]}
+                            // On met a jours la variable qui contient tous le groupe + le nouveau joueurs
+                            setPlayers([...players, newPlayer]);
+                            localStorage.setItem('players', JSON.stringify(players))
+                            setNumberPlayer("");
+                            setErreur("");
+                            setSuccess('Joueur ajoutée.')
+                        }else{
+                            setSuccess("");
+                            setErreur("Joueurs déjà présent.")
+                        }
                         }catch (error){
                             console.log("Erreur recherche joueur: ", error);
                             setErreur("Numéro de joueur inconue.");
@@ -71,15 +91,16 @@ function Entrainement(){
                             }                
                 }
                 getPlayer();
-                console.log(players);
         },[numberPlayer])
+
         useEffect(()=>{
             localStorage.setItem('players', JSON.stringify(players))
         },[players])
+        
     return (
         <>
         <Container>
-            <Row>
+            <Row className="mb-3">
                 <Form onSubmit={handleSubmit}>
                     <InputGroup className="mb-3">
                         <Form.Control
@@ -99,9 +120,18 @@ function Entrainement(){
                 <span style={{color:'red'}}>{erreur}</span>
                 <span style={{color:'green'}}>{success}</span>
             </Row>
-            <Row>
-                <h3>Nombre de joueur : {players.length}</h3>
-                <Button variant="warning">Lancer le tirage des équipes</Button>
+            <Row className="mb-5">
+                <Col>
+                    <h3>Nombre(s) de joueur(s) : {players.length}</h3>
+                </Col>
+                <Col>
+                    <Button variant="danger" onClick={handleDeleteAll}>Supprimer tous les joueurs</Button>
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Link to="/tirage">
+                    <Button variant="warning">Lancer le tirage des équipes</Button>
+                </Link>
             </Row>
             <Row>
                 <h2>Liste des joueurs inscrits :</h2>
@@ -136,7 +166,6 @@ function Entrainement(){
                     </tbody>
                 </Table>
             </Row>
-                
         </Container>
         </>
     )

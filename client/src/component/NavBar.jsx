@@ -22,7 +22,7 @@ function NavBar() {
                 </Navbar.Brand>
                 <Nav className="me-auto">
                     <Link to="/">
-                        <Button>Entrainement</Button>
+                        <Button>Liste des joueurs</Button>
                     </Link>
                     <Link to="/">
                         <Button>Administrateur</Button>
