@@ -5,138 +5,131 @@ import { useParams } from "react-router-dom";
 function Tirage(){
     const { numberPlayerTeam } = useParams();
     // taille des équipe en fonction de la valeur reçu
-    const teamSize = numberPlayerTeam === "true" ? 3:2;
+    // const teamSize = numberPlayerTeam === "true" ? 3:2;
+    const teamSize = 2;
     const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('players'))||[])
     const teams = [];
+    // Pour stocker les joueurs qui ne peuvent être avec personne
+    const playersAlone = [];
     // Pour stocker les joueurs attribuer a une équipes pour éviter les doublons
-    const assignedPlayers = new Set();
+    const remainingPlayers = new Set(players);
     let currentTeam = [];
 
-    // function pour vérifié si les joueurs on déjà jouer ensemble avec un troisième joueurs optionnel
-    // const havePlayedTogether =(player1 , player2 , player3 = false)=>{
-    //     // on parcours le tableau a la recherche du numero de l'autre joueurs
-    //     const havePlayed = player1.teammates.includes(player2.numero) && player2.teammates.includes(player1.numero);
-    //     // Si 3ème joueur renseigné
-    //     if(player3){
-    //         // on vérifie en rappellant cette function si il a jouer avec l'un des deux joueurs
-    //         const havePlayedWidthThird = havePlayedTogether(player1,player3) && havePlayedTogether(player2,player3);
-    //         return havePlayedWidthThird && havePlayed;
-    //     }else{
-    //         return havePlayed;
-    //     }
-    // }
-
    // Function pour mélanger le tableau de joueurs algorythme de Fisher-Yates shuffle
-   const mixPlayers = (array)=>{
-    // Pour chaque élément du tableau
-    for(let i = array.length -1; i >0; i--){
-        // tirer au sort un nombre compris entre 0 et la taille du tableau - 1 pour correspondre au index
-        // floor le plus grand entier proche de celui tirer // random pour tirer un nombre entre 0 et 0.99...
-        const j = Math.floor(Math.random()*(i + 1));
-        [array[i], array[j]] = [array[j],array[i]]
-    }
-    return array;
-   }
+//    const mixPlayers = (array)=>{
+//     // Pour chaque élément du tableau
+//     for(let i = array.length -1; i >0; i--){
+//         // tirer au sort un nombre compris entre 0 et la taille du tableau - 1 pour correspondre au index
+//         // floor le plus grand entier proche de celui tirer // random pour tirer un nombre entre 0 et 0.99...
+//         const j = Math.floor(Math.random()*(i + 1));
+//         [array[i], array[j]] = [array[j],array[i]]
+//     }
+//     return array;
+//    }
 
    const selectRandomPlayer = (player)=> {
-        // vérifie les coéquipiers
-        const validTeammates = players;
         // Si le joueurs na pas été assigné encore
-        if(!assignedPlayers.has(player)){
-            // parcours le tableau en enlevant ceux qui ont un numero inclus dans teammates
-            if(player.teammates.length!==0){
-                for(let i = 0; i < player.teammates.length; i++){
-                    validTeammates.filter((p)=> p.numero !== player.teammates[i]);
-                }
-            }
+        if(remainingPlayers.has(player)){
+            // initialise la liste de tous les joueurs a une liste moins les joueurs assigné et moins les joueurs interdits
+            let validTeammates = players.filter(p => !player.teammates.includes(p.numero) && remainingPlayers.has(p));
             // Si la liste de coéquipier possible a un élément au moins
             if(validTeammates.length > 0){
                 // on en selectionne un au hazard par son index
-                const randomTeammate = validTeammates[Math.floor(Math.random()*(validTeammates.length - 1))];
+                const randomTeammate = validTeammates[Math.floor(Math.random()*validTeammates.length)];
                 // Si le joueur trouvé n'est pas assigné a une équipe
-                if(!assignedPlayers.has(randomTeammate)){
+                // if(!assignedPlayers.has(randomTeammate)){
                     // on envoi le joueur dans une équipe et son coéquipier également
-                    currentTeam.push(player);
-                    currentTeam.push(players.find((player)=>player.numero === randomTeammate.numero))
+                    currentTeam.push(player, randomTeammate);
                     // et on ajoute les deux joueurs a a liste des jouers affecté à une équipe
-                    assignedPlayers.add(player);
-                    assignedPlayers.add(players.find((player)=>player.numero === randomTeammate.numero));
-                } else {
-                    // Si il ne reste qu'un joueur a assigné
-                    if(assignedPlayers.size == players.length - 1){
-                        const indexRandom = Math.floor(Math.random()*(teams.length - 1))
-                        // On selectionne une équipe au hazard et on vérifie si le jouer peut être avec ses joueurs
-                            const randomTeam = teams[indexRandom];
-                            const sizeTeamBeforeVerif = randomTeam.length;
-                            // parcours le tableau en enlevant ceux qui ont un numero inclus dans teammates
-                            for(let i = 0; i < player.teammates.length; i++){
-                                randomTeam.filter((p)=> p.numero !== player.teammates[i]);
-                            }
-                            const sizeTeamAfterVerif = randomTeam.length;
-                            if(sizeTeamAfterVerif === sizeTeamBeforeVerif ){
-                                // on enléve l'équipe du tableau d'équipe déjà créer car on la rajoute après
-                                teams.splice(indexRandom);
-                                // on remplace l'équipe par celle retirer et on ajoute le joueur
-                                currentTeam = randomTeam;
-                                currentTeam.push(player);
-                                assignedPlayers.add(player);
-                                
-                            }else {
-                                // Sinon on rappel la fonction pour retrouver une équipe possible
-                                selectRandomPlayer(player);
-                            }
+                    remainingPlayers.delete(player);
+                    remainingPlayers.delete(randomTeammate);
+                // } // Si il ne reste qu'un joueur a assigné
+            } else if(remainingPlayers.size === 1){
+                // On selectionne une équipe au hazard et on vérifie si le joueur peut être avec ses joueurs
+                    const indexRandom = Math.floor(Math.random()*teams.length);
+                    const randomTeam = teams[indexRandom];
+                    if(randomTeam.every(p => !player.teammates.includes(p.numero))){
+                                randomTeam.push(player);
+                                remainingPlayers.delete(player);
+                     // si il ne peut pas on relance pour trouver une autre équipe. 
                     }else {
-                        // sinon on rappel la fonction pour trouver un autre joueur
                         selectRandomPlayer(player);
                     }
-                }
-            } else {
-                const indexRandom = Math.floor(Math.random()* (players.length - 1));
-                const randomTeammate = players[indexRandom];
-                // si le jouer random n'est pas assigné
-                if(!assignedPlayers.has(randomTeammate)){
-                    // on envoi le joueur dans une équipe et son coéquipier également
-                    currentTeam.push(player);
-                    currentTeam.push(players.find((player)=>player.numero === randomTeammate.numero))
-                    // et on ajoute les deux joueurs a a liste des jouers affecté à une équipe
-                    assignedPlayers.add(player);
-                    assignedPlayers.add(players.find((player)=>player.numero === randomTeammate.numero));
-                } else {
-                    // Si il ne reste qu'un joueur a assigné
-                    if(assignedPlayers.size == players.length - 1){
-                        const indexRandom = Math.floor(Math.random()*(teams.length - 1))
-                        // On selectionne une équipe au hazard
-                        const randomTeam = teams[indexRandom];
-                        // on enléve l'équipe du tableau d'équipe déjà créer car on la rajoute après
-                        teams.splice(indexRandom);
-                        // on remplace l'équipe par celle retirer et on ajoute le joueur
-                        currentTeam = randomTeam;
-                        currentTeam.push(player);
-                        assignedPlayers.add(player);
-                   }
+            // } else {
+            //     // PROBLEME ICI 
+            //     const indexRandom = Math.floor(Math.random()* (players.length - 1));
+            //     const randomTeammate = players[indexRandom];
+            //     // si le jouer random n'est pas assigné
+            //     if(!assignedPlayers.has(randomTeammate)){
+            //         // on envoi le joueur dans une équipe et son coéquipier également
+            //         currentTeam.push(player);
+            //         currentTeam.push(randomTeammate)
+            //         // et on ajoute les deux joueurs a a liste des jouers affecté à une équipe
+            //         assignedPlayers.add(player);
+            //         assignedPlayers.add(randomTeammate);
+            //     } else {
+            //         // Si il ne reste qu'un joueur a assigné
+            //         if(assignedPlayers.size == players.length - 1){
+            //             const indexRandom = Math.floor(Math.random()*(teams.length - 1))
+            //             // On selectionne une équipe au hazard
+            //             const randomTeam = teams[indexRandom];
+            //             // on enléve l'équipe du tableau d'équipe déjà créer car on la rajoute après
+            //             teams.splice(indexRandom);
+            //             // on remplace l'équipe par celle retirer et on ajoute le joueur
+            //             currentTeam = randomTeam;
+            //             currentTeam.push(player);
+            //             assignedPlayers.add(player);
+            //        }
+            //     }
+            // }
+            }else {
+                // si pas de joueurs possible restant, on parcours les équipes à la recherche d'un joueurs possible
+                for(const team of teams) {
+                    const validPartner = team.find(p => !player.teammates.includes(p.numero));
+                    if (validPartner){
+                        // on va cherche l'index du joueurs dans son tableau d'équipes
+                        const index = team.findIndex(p => p.numero === validPartner.numero)
+                        // on va chercher son partenaires actuelle 
+                        let partnerIndex;
+                        index === 0 ? partnerIndex = 1: partnerIndex= 0;
+                        const newPlayerAlone = team[partnerIndex];
+                        // on enléve le joueur  a remplacer et le rajoute dans les joueurs restant a attribuer
+                        remainingPlayers.add(newPlayerAlone);
+                        team.splice(partnerIndex,1);
+                        // on ajoute notre joueur et on l'enléve des joueurs restant
+                        team.push(player);
+                        remainingPlayers.delete(player);
+                        // je lance la recherche pour le joueur que l'on viens de rajouter
+                        selectRandomPlayer(newPlayerAlone);
+                        break;
+                    }else {
+                        // gérer le cas ou aucun partenaire valide existe
+                        playersAlone.push(player);
+                        remainingPlayers.delete(player);
+                    }
                 }
             }
         }
-   }
-   // Mélange les joueurs à la création du composant et constitution des équipes
+    };
+   // constitution des équipes à la création du composant
    useEffect(()=>{
-    const newTablePlayers = mixPlayers(players);
-    setPlayers(newTablePlayers);
-    // Formations des  équipes 
-    for (const player of players){
-        if(currentTeam.length < teamSize){
-            selectRandomPlayer(player);
-            // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
-            if(currentTeam.length == teamSize || assignedPlayers.size === players.length){
-                teams.push(currentTeam);
-                currentTeam = [];
-            }else {
+    // const newTablePlayers = mixPlayers(players);
+    // setPlayers(newTablePlayers);
+    while(remainingPlayers.size !=0){
+        // Formations des  équipes 
+        for (const player of Array.from(remainingPlayers)){
+            if(currentTeam.length < teamSize){
                 selectRandomPlayer(player);
+                // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
+                if(currentTeam.length === teamSize){
+                    teams.push(currentTeam);
+                    currentTeam = [];
+                }
             }
         }
     }
-    console.log(players);
     console.log(teams);
+    console.log(remainingPlayers);
    },[]); // Tableau vide pour que cela se produit qu'une fois lors du montage du composant
 
    useEffect(()=>{
@@ -152,6 +145,7 @@ function Tirage(){
             </Container>
         </>
     )
+
 }
 
 export default Tirage;
