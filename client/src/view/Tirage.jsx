@@ -1,5 +1,5 @@
 import { useState, useEffect} from "react";
-import { Container, Row } from "react-bootstrap";
+import { Card, Container, ListGroup, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 function Tirage(){
@@ -7,7 +7,8 @@ function Tirage(){
     // taille des équipe en fonction de la valeur reçu
     // const teamSize = numberPlayerTeam === "true" ? 3:2;
     const teamSize = 2;
-    const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('players'))||[])
+    const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('players'))||[]);
+    const [teamsFinish, setTeamsFinish] = useState([]);
     const teams = [];
     // Pour stocker les joueurs qui ne peuvent être avec personne
     const playersAlone = [];
@@ -85,7 +86,6 @@ function Tirage(){
                 let redistributed = false;
                 for(let team of teams){
                     if(team.length === 2 && team.every(p => !player.teammates.includes(p.numero))){
-                        console.log(team);
                         team.push(player);
                         redistributed = true;
                         break;
@@ -116,20 +116,30 @@ function Tirage(){
     if (teams.length % 2 !== 0 ){
         teamBalancing();
     }
-    console.log(teams);
-    console.log(remainingPlayers);
-    console.log(playersAlone);
+    setTeamsFinish(teams);
    },[]); // Tableau vide pour que cela se produit qu'une fois lors du montage du composant
 
    useEffect(()=>{
     localStorage.setItem('players', JSON.stringify(players))
     },[players])
-
     return(
         <>
             <Container>
                 <Row>
-
+                    
+                    {teamsFinish.map((team,index)=>(
+                        <Card key={index}>
+                        <Card.Header>Equipe n°{index + 1}</Card.Header>
+                        <ListGroup variant="flush">
+                          <ListGroup.Item>{team[0].nom} {team[0].prenom}</ListGroup.Item>
+                          <ListGroup.Item>{team[1].nom} {team[1].prenom}</ListGroup.Item>
+                          {team[2] ? 
+                            (<ListGroup.Item>{team[2].nom} {team[2].prenom}</ListGroup.Item>)
+                          : ('')
+                        }
+                        </ListGroup>
+                      </Card>
+                    ))}
                 </Row>
             </Container>
         </>
