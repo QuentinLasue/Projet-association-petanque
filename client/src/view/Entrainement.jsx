@@ -10,7 +10,7 @@ function Entrainement(){
     // variable ou l'on stock les joueurs de la partie
     const[players, setPlayers] = useState(JSON.parse(localStorage.getItem('players')) || []);
     // variable si l'on veut des équipes de 3 joueurs
-    const[teamsOfThreePlayers,setTeamsOfThreePlayers] = useState(false)
+    // const[teamsOfThreePlayers,setTeamsOfThreePlayers] = useState(false)
     // variable pour affichage d'un message d'erreur et de succes
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
@@ -132,7 +132,7 @@ function Entrainement(){
                     <Button variant="danger" onClick={handleDeleteAll}>Supprimer tous les joueurs</Button>
                 </Col>
             </Row>
-            <Row className="mb-3">
+            {/* <Row className="mb-3">
                 <Col className="d-flex justify-content-center">
                     <Form>
                         <Form.Check 
@@ -144,9 +144,10 @@ function Entrainement(){
                         />
                     </Form>
                 </Col>
-            </Row>
+            </Row> */}
             <Row className="mb-3">
-                <Link to={`/tirage/${teamsOfThreePlayers}`}>
+                {/* <Link to={`/tirage/${teamsOfThreePlayers}`}> */}
+                <Link to={`/tirage`}>
                     <Button variant="warning">Lancer le tirage des équipes</Button>
                 </Link>
             </Row>

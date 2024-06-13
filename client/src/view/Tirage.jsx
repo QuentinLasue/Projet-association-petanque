@@ -3,7 +3,7 @@ import { Container, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 function Tirage(){
-    const { numberPlayerTeam } = useParams();
+    // const { numberPlayerTeam } = useParams();
     // taille des équipe en fonction de la valeur reçu
     // const teamSize = numberPlayerTeam === "true" ? 3:2;
     const teamSize = 2;
@@ -15,18 +15,6 @@ function Tirage(){
     const remainingPlayers = new Set(players);
     let currentTeam = [];
 
-   // Function pour mélanger le tableau de joueurs algorythme de Fisher-Yates shuffle
-//    const mixPlayers = (array)=>{
-//     // Pour chaque élément du tableau
-//     for(let i = array.length -1; i >0; i--){
-//         // tirer au sort un nombre compris entre 0 et la taille du tableau - 1 pour correspondre au index
-//         // floor le plus grand entier proche de celui tirer // random pour tirer un nombre entre 0 et 0.99...
-//         const j = Math.floor(Math.random()*(i + 1));
-//         [array[i], array[j]] = [array[j],array[i]]
-//     }
-//     return array;
-//    }
-
    const selectRandomPlayer = (player)=> {
         // Si le joueurs na pas été assigné encore
         if(remainingPlayers.has(player)){
@@ -37,13 +25,12 @@ function Tirage(){
                 // on en selectionne un au hazard par son index
                 const randomTeammate = validTeammates[Math.floor(Math.random()*validTeammates.length)];
                 // Si le joueur trouvé n'est pas assigné a une équipe
-                // if(!assignedPlayers.has(randomTeammate)){
                     // on envoi le joueur dans une équipe et son coéquipier également
                     currentTeam.push(player, randomTeammate);
                     // et on ajoute les deux joueurs a a liste des jouers affecté à une équipe
                     remainingPlayers.delete(player);
                     remainingPlayers.delete(randomTeammate);
-                // } // Si il ne reste qu'un joueur a assigné
+                // Si il ne reste qu'un joueur a assigné
             } else if(remainingPlayers.size === 1){
                 // On selectionne une équipe au hazard et on vérifie si le joueur peut être avec ses joueurs
                     const indexRandom = Math.floor(Math.random()*teams.length);
@@ -55,33 +42,6 @@ function Tirage(){
                     }else {
                         selectRandomPlayer(player);
                     }
-            // } else {
-            //     // PROBLEME ICI 
-            //     const indexRandom = Math.floor(Math.random()* (players.length - 1));
-            //     const randomTeammate = players[indexRandom];
-            //     // si le jouer random n'est pas assigné
-            //     if(!assignedPlayers.has(randomTeammate)){
-            //         // on envoi le joueur dans une équipe et son coéquipier également
-            //         currentTeam.push(player);
-            //         currentTeam.push(randomTeammate)
-            //         // et on ajoute les deux joueurs a a liste des jouers affecté à une équipe
-            //         assignedPlayers.add(player);
-            //         assignedPlayers.add(randomTeammate);
-            //     } else {
-            //         // Si il ne reste qu'un joueur a assigné
-            //         if(assignedPlayers.size == players.length - 1){
-            //             const indexRandom = Math.floor(Math.random()*(teams.length - 1))
-            //             // On selectionne une équipe au hazard
-            //             const randomTeam = teams[indexRandom];
-            //             // on enléve l'équipe du tableau d'équipe déjà créer car on la rajoute après
-            //             teams.splice(indexRandom);
-            //             // on remplace l'équipe par celle retirer et on ajoute le joueur
-            //             currentTeam = randomTeam;
-            //             currentTeam.push(player);
-            //             assignedPlayers.add(player);
-            //        }
-            //     }
-            // }
             }else {
                 // si pas de joueurs possible restant, on parcours les équipes à la recherche d'un joueurs possible
                 for(const team of teams) {
@@ -111,10 +71,35 @@ function Tirage(){
             }
         }
     };
+
+    const teamBalancing = ()=>{
+        // Sélectionne une équipe à redistribuer
+        const teamToRedistribute = teams.find(team=> team.length === 2);
+        if(teamToRedistribute){
+            //stocker l'équipe retirer
+            const playersToRedistribute = teamToRedistribute
+            // Retire cette équipe
+            teams.splice(teams.indexOf(teamToRedistribute),1);
+            // On essaye de redistribuer les joueurs dans des équipes valide 
+            playersToRedistribute.forEach(player=>{
+                let redistributed = false;
+                for(let team of teams){
+                    if(team.length === 2 && team.every(p => !player.teammates.includes(p.numero))){
+                        console.log(team);
+                        team.push(player);
+                        redistributed = true;
+                        break;
+                    }
+                }
+                // si pas d'équipe on le met dans le tableau des joueurs seul
+                if(!redistributed){
+                    playersAlone.push(player);
+                }
+            })
+        }
+    }
    // constitution des équipes à la création du composant
    useEffect(()=>{
-    // const newTablePlayers = mixPlayers(players);
-    // setPlayers(newTablePlayers);
     while(remainingPlayers.size !=0){
         // Formations des  équipes 
         for (const player of Array.from(remainingPlayers)){
@@ -128,8 +113,12 @@ function Tirage(){
             }
         }
     }
+    if (teams.length % 2 !== 0 ){
+        teamBalancing();
+    }
     console.log(teams);
     console.log(remainingPlayers);
+    console.log(playersAlone);
    },[]); // Tableau vide pour que cela se produit qu'une fois lors du montage du composant
 
    useEffect(()=>{
