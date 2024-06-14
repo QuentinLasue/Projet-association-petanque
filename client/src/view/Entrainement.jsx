@@ -75,7 +75,6 @@ function Entrainement(){
                             // On va cherche le nouveau joueurs 
                             const response = await axios.get(`http://localhost:5000/membres/${numberPlayer}`);
                             // On ajoute un champs  pour contenir les équipiers du jours
-                            console.log(response.data[0].numero);
                             const newPlayer = {...response.data[0], teammates:[response.data[0].numero]}
                             // On met a jours la variable qui contient tous le groupe + le nouveau joueurs
                             setPlayers([...players, newPlayer]);

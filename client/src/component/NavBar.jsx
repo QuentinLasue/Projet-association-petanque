@@ -24,6 +24,9 @@ function NavBar() {
                     <Link to="/">
                         <Button>Liste des joueurs</Button>
                     </Link>
+                    <Link to="/tirage">
+                        <Button>Tirage</Button>
+                    </Link>
                     <Link to="/">
                         <Button>Administrateur</Button>
                     </Link>
