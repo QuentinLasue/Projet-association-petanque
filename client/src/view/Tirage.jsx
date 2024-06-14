@@ -276,7 +276,10 @@ function Tirage(){
                     ))}
                     </>
                 ):(
-                    <h1 className="mb-3 text-danger">Les équipes n'ont pas pu être faites. </h1>
+                    <>
+                    <h1 className="mb-3 text-danger">Les équipes n'ont pas pu être faites. Veuillez réinitialiser la liste des joueurs.  </h1>
+                    <p>Les joueurs ont déjà joué ensemble.</p>
+                    </>
                 )
                 }
                 </>
