@@ -35,13 +35,15 @@ function Entrainement(){
         }
         const handleDelete = (numero)=>{
             // demande de confirmation de suppression
-            const confirmation = window.confirm("Êtes-vous sûr de vouloir retirer ce joueur ?");
+            const confirmation = window.confirm("Êtes-vous sûr de vouloir retirer ce joueur ? Si il y a un tirage en cours il seras éffacé.");
 
             if(confirmation){
                 // Créations d'un nouveau tableau en excluant celui qui a le numero reçu
                 const updatePlayers = players.filter((player)=> player.numero !== numero);
                 setPlayers(updatePlayers);
                 setErreur('');
+                localStorage.setItem('matchs', JSON.stringify([]))
+                localStorage.setItem('teams', JSON.stringify([]))
                 setSuccess("Le joueur à été retiré.");
             }else{
                 setErreur("");
@@ -53,6 +55,8 @@ function Entrainement(){
 
             if(confirmation){
                 setPlayers([]);
+                localStorage.setItem('matchs', JSON.stringify([]))
+                localStorage.setItem('teams', JSON.stringify([]))
                 setErreur("");
                 setSuccess("Liste effacée.");
             }else{
@@ -98,6 +102,7 @@ function Entrainement(){
 
         useEffect(()=>{
             localStorage.setItem('players', JSON.stringify(players))
+
         },[players])
 
     return (
@@ -147,7 +152,7 @@ function Entrainement(){
             <Row className="mb-3">
                 {/* <Link to={`/tirage/${teamsOfThreePlayers}`}> */}
                 <Link to={`/tirage`}>
-                    <Button variant="warning">Lancer le tirage des équipes</Button>
+                    <Button variant="warning">Aller au tirage des équipes</Button>
                 </Link>
             </Row>
             <Row>

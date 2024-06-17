@@ -1,5 +1,5 @@
 import { useState, useEffect} from "react";
-import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 function Tirage(){
@@ -8,10 +8,11 @@ function Tirage(){
     // const teamSize = numberPlayerTeam === "true" ? 3:2;
     const teamSize = 2;
     const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('players'))||[]);
-    const [teamsFinish, setTeamsFinish] = useState([]);
+    const [teamsFinish, setTeamsFinish] = useState(JSON.parse(localStorage.getItem('teams')) || []);
     const teams = [];
+    const [tryTocreated, setTryTocreated] = useState(false)
     // stock la liste des matchs
-    const [matchs, setMatchs]= useState([]);
+    const [matchs, setMatchs]= useState(JSON.parse(localStorage.getItem('matchs')) || []);
     const newMatch=[];
     // Pour stocker les joueurs qui ne peuvent être avec personne
     const [playersAlone, setPlayersAlone] = useState([]);
@@ -146,7 +147,7 @@ function Tirage(){
         const teamOf3 = teamsFinish.filter(team=> team.length ===3);
         const teamOf2 = teamsFinish.filter(team=> team.length ===2);
         // Sachant que le nombre d'équipe total est paires, si un des groupes est impaires 
-        if(teamOf3.lenght %2 !== 0 ){
+        if(teamOf3.length %2 !== 0 ){
             // alors on prend une équipe de 3 et on le met dans le groupe de 2
             const teamToMove = teamOf3.pop();
             teamOf2.push(teamToMove);
@@ -197,35 +198,40 @@ function Tirage(){
         setPlayers(updatedPlayers);
     }
 
-   // constitution des équipes à la création du composant
-   useEffect(()=>{
-    while(remainingPlayers.size !=0){
-        // Formations des  équipes 
-        for (const player of Array.from(remainingPlayers)){
-            if(currentTeam.length < teamSize){
-                selectRandomPlayer(player);
-                // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
-                if(currentTeam.length === teamSize){
-                    teams.push(currentTeam);
-                    currentTeam = [];
+    const createTeams = ()=>{
+        setTryTocreated(true);
+        console.log(playersAlone);
+        setPlayersAlone([]);
+        while(remainingPlayers.size !=0){
+            // Formations des  équipes 
+            for (const player of Array.from(remainingPlayers)){
+                if(currentTeam.length < teamSize){
+                    selectRandomPlayer(player);
+                    // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
+                    if(currentTeam.length === teamSize){
+                        teams.push(currentTeam);
+                        currentTeam = [];
+                    }
                 }
             }
         }
-    }
-    if (teams.length % 2 !== 0 ){
-        teamBalancing();
-    }
-    setTeamsFinish(teams);
-    },[]); // Tableau vide pour que cela se produit qu'une fois lors du montage du composant
+        if (teams.length % 2 !== 0 ){
+            teamBalancing();
+        }
+        setTeamsFinish(teams);
+    }   
+
     useEffect(()=>{
         if(teamsFinish.length > 0){
             randomDrawMatchs();
         }
-   },[teamsFinish]) // a exécuter a la mise a jours de teamsfinish
+   },[teamsFinish]) // à exécuter à la mise a jours de teamsfinish
 
    useEffect(()=>{
-    localStorage.setItem('players', JSON.stringify(players))
-    },[players])
+    localStorage.setItem('players', JSON.stringify(players));
+    localStorage.setItem('matchs', JSON.stringify(matchs));
+    localStorage.setItem('teams', JSON.stringify(teamsFinish));
+    },[players, matchs, teamsFinish])
     return(
         <>
             <Container>
@@ -247,7 +253,7 @@ function Tirage(){
                 </Row>
                 ):('')
                 }
-                { teamsFinish.length !==0 && matchs.length !==0?(
+                { teamsFinish.length > 0  && matchs.length>0?(
                     <>
                     <h1 className="mb-3">Tirage des équipes : </h1>
                     {
@@ -274,12 +280,25 @@ function Tirage(){
                             </Card>
                         </Row>
                     ))}
+                    <Button variant="warning" size="lg" onClick={createTeams}>Lancer un nouveau tirage</Button>
                     </>
                 ):(
                     <>
-                    <h1 className="mb-3 text-danger">Les équipes n'ont pas pu être faites. Veuillez réinitialiser la liste des joueurs.  </h1>
-                    <p>Les joueurs ont déjà joué ensemble.</p>
+                    {tryTocreated && teamsFinish.length === 0  && matchs.length === 0? (
+                        <>
+                        <h1 className="mb-3 text-danger">Les équipes n'ont pas pu être faites. Veuillez réinitialiser la liste des joueurs.  </h1>
+                        <p>Les joueurs ont déjà joué ensemble.</p>
+                        </>
+                        
+                    ):(
+                        <>
+                        <h1 className="mb-3">Vous n'avez pas encore lancer le tirage.</h1>
+                        <Button variant="warning" size="lg" onClick={createTeams}>Lancer le tirage</Button>
+                        
+                        </>
+                    )}
                     </>
+                    
                 )
                 }
                 </>
