@@ -42,8 +42,8 @@ function Entrainement(){
                 const updatePlayers = players.filter((player)=> player.numero !== numero);
                 setPlayers(updatePlayers);
                 setErreur('');
-                localStorage.setItem('matchs', JSON.stringify([]))
-                localStorage.setItem('teams', JSON.stringify([]))
+                localStorage.setItem('matchs', JSON.stringify([]));
+                localStorage.setItem('teams', JSON.stringify([]));
                 setSuccess("Le joueur à été retiré.");
             }else{
                 setErreur("");
@@ -55,8 +55,9 @@ function Entrainement(){
 
             if(confirmation){
                 setPlayers([]);
-                localStorage.setItem('matchs', JSON.stringify([]))
-                localStorage.setItem('teams', JSON.stringify([]))
+                localStorage.setItem('matchs', JSON.stringify([]));
+                localStorage.setItem('teams', JSON.stringify([]));
+                localStorage.setItem('nbrDraw',JSON.stringify(0));
                 setErreur("");
                 setSuccess("Liste effacée.");
             }else{
@@ -65,9 +66,9 @@ function Entrainement(){
             }
         }
         
-        const handleSwitchChange = () => {
-            setTeamsOfThreePlayers(!teamsOfThreePlayers); // Inverse la valeur actuelle du switch
-        };
+        // const handleSwitchChange = () => {
+        //     setTeamsOfThreePlayers(!teamsOfThreePlayers); // Inverse la valeur actuelle du switch
+        // };
 
         useEffect(()=>{
             const getPlayer = async ()=>{

@@ -1,6 +1,6 @@
 import { useState, useEffect} from "react";
 import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function Tirage(){
     // const { numberPlayerTeam } = useParams();
@@ -9,11 +9,11 @@ function Tirage(){
     const teamSize = 2;
     const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('players'))||[]);
     const [teamsFinish, setTeamsFinish] = useState(JSON.parse(localStorage.getItem('teams')) || []);
-    const teams = [];
+    let teams = [];
     const [tryTocreated, setTryTocreated] = useState(false)
     // stock la liste des matchs
     const [matchs, setMatchs]= useState(JSON.parse(localStorage.getItem('matchs')) || []);
-    const newMatch=[];
+    let newMatch=[];
     // Pour stocker les joueurs qui ne peuvent être avec personne
     const [playersAlone, setPlayersAlone] = useState([]);
     // Pour stocker les joueurs non-attribuer a une équipes pour éviter les doublons
@@ -23,6 +23,19 @@ function Tirage(){
     let currentTeam = [];
     // protection boucle trop grande 
     let permutationLimit = 50;
+    // Pour ne pas tirer plus de partie que l'entrainement demande
+    const [nbrDraw, setNbrDraw]= useState(JSON.parse(localStorage.getItem('nbrDraw')) || 0)
+    let navigate = useNavigate();
+
+    // mélange de Knuth
+    const shuffleArray=(array)=> {
+        const newArray = array.slice(); // Copie du tableau pour éviter de modifier l'original
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // Échange des éléments
+        }
+        return newArray;
+      }
 
    const selectRandomPlayer = (player)=> {
         // Si le joueurs na pas été assigné encore
@@ -75,6 +88,7 @@ function Tirage(){
                     if(permutationLimit <= 0){
                         setPlayersAlone([...playersAlone, player]);
                         remainingPlayers.delete(player);
+                        setConstraintsError("La formation des équipes est impossible en respecatant les contraintes de coéquipiers. Vous pouvez réinitialiser la liste d'équipes.");
                         break;
                     }
                     const validPartner = team.find(p => !player.teammates.includes(p.numero));
@@ -93,6 +107,7 @@ function Tirage(){
                         remainingPlayers.delete(player);
                         // je lance la recherche pour le joueur que l'on viens de rajouter
                         permutationLimit--;
+                        console.log(permutationLimit);
                         selectRandomPlayer(newPlayerAlone);
                         break;
                     }else {
@@ -200,11 +215,15 @@ function Tirage(){
 
     const createTeams = ()=>{
         setTryTocreated(true);
-        console.log(playersAlone);
-        setPlayersAlone([]);
+        setNbrDraw(nbrDraw+1);
+        if(nbrDraw>3){
+            navigate('/limiteNombrePartie');
+            return;
+        }
         while(remainingPlayers.size !=0){
             // Formations des  équipes 
-            for (const player of Array.from(remainingPlayers)){
+            const shuffleList = shuffleArray(Array.from(remainingPlayers));
+            for (const player of shuffleList){
                 if(currentTeam.length < teamSize){
                     selectRandomPlayer(player);
                     // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
@@ -220,7 +239,13 @@ function Tirage(){
         }
         setTeamsFinish(teams);
     }   
-
+    const deleteDraw = ()=> {
+        setMatchs([]);
+        setTeamsFinish([]);
+        setTryTocreated(false);
+        setPlayersAlone([]);
+        createTeams();
+    }
     useEffect(()=>{
         if(teamsFinish.length > 0){
             randomDrawMatchs();
@@ -231,7 +256,8 @@ function Tirage(){
     localStorage.setItem('players', JSON.stringify(players));
     localStorage.setItem('matchs', JSON.stringify(matchs));
     localStorage.setItem('teams', JSON.stringify(teamsFinish));
-    },[players, matchs, teamsFinish])
+    localStorage.setItem('nbrDraw', JSON.stringify(nbrDraw));
+    },[players, matchs, teamsFinish ,nbrDraw])
     return(
         <>
             <Container>
@@ -240,7 +266,7 @@ function Tirage(){
                 ):(
                 <>
                 {
-                playersAlone.length !== 0 ? (
+                playersAlone.length !== 0 && teamsFinish.length > 0  && matchs.length > 0? (
                 <Row className="justify-content-center">
                         <Card  border="danger" className="m-2 w-25 p-0">
                         <Card.Header className="bg-danger fw-bold text-light">Liste  joueur(s) sans équipe possible</Card.Header>
@@ -253,7 +279,7 @@ function Tirage(){
                 </Row>
                 ):('')
                 }
-                { teamsFinish.length > 0  && matchs.length>0?(
+                { teamsFinish.length > 0  && matchs.length>0 ?(
                     <>
                     <h1 className="mb-3">Tirage des équipes : </h1>
                     {
@@ -280,7 +306,7 @@ function Tirage(){
                             </Card>
                         </Row>
                     ))}
-                    <Button variant="warning" size="lg" onClick={createTeams}>Lancer un nouveau tirage</Button>
+                    <Button variant="warning" size="lg" onClick={deleteDraw}>Passer aux tirage suivant</Button>
                     </>
                 ):(
                     <>
@@ -289,16 +315,13 @@ function Tirage(){
                         <h1 className="mb-3 text-danger">Les équipes n'ont pas pu être faites. Veuillez réinitialiser la liste des joueurs.  </h1>
                         <p>Les joueurs ont déjà joué ensemble.</p>
                         </>
-                        
                     ):(
                         <>
                         <h1 className="mb-3">Vous n'avez pas encore lancer le tirage.</h1>
                         <Button variant="warning" size="lg" onClick={createTeams}>Lancer le tirage</Button>
-                        
                         </>
                     )}
                     </>
-                    
                 )
                 }
                 </>
