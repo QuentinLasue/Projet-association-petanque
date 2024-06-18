@@ -24,7 +24,7 @@ function Entrainement(){
         const handleSubmit = (event)=>{
             // empéche le rechargement de la page
             event.preventDefault()
-            if(!isNaN(inputValue)){
+            if(!isNaN(inputValue) && inputValue!== ''){
                 setNumberPlayer(inputValue);
                 setInputValue('');
                 setErreur('');
@@ -120,6 +120,7 @@ function Entrainement(){
                         value={inputValue}
                         onChange={handleInput}
                         onSubmit={handleSubmit}
+                        required
                         />
                         <Button variant="outline-primary" id="button-numberPlayer" type="submit">
                             Ajouter

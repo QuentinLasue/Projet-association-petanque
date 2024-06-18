@@ -27,9 +27,6 @@ function NavBar() {
                     <Link to="/tirage">
                         <Button>Tirage</Button>
                     </Link>
-                    <Link to="/">
-                        <Button>Administrateur</Button>
-                    </Link>
                 </Nav>
                 
             </Container>
