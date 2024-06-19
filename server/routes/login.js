@@ -53,7 +53,7 @@ router.post("/", async (request, response) => {
                 return response.status(401).json({error: "Mauvais mot de passe"});
             }
             // génération d'un token 
-            const token = jwt.sign({userName: user.name}, SECRET_KEY,{ expiresIn:'6h'});
+            const token = jwt.sign({userName: user.name}, SECRET_KEY,{ expiresIn:'2h'});
         
             //renvoyer le token 
             response.json({accessToken: token})
