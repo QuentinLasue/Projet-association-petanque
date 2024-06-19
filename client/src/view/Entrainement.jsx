@@ -91,14 +91,14 @@ function Entrainement(){
                             setSuccess("");
                             setErreur("Joueurs déjà présent.")
                         }
-                        }catch (error){
-                            console.log("Erreur recherche joueur: ", error);
-                            setErreur("Numéro de joueur inconue.");
-                            setSuccess('');
-                            }
-                            }                
-                }
-                getPlayer();
+                    }catch (error){
+                        console.log("Erreur recherche joueur: ", error);
+                        setErreur("Numéro de joueur inconue.");
+                        setSuccess('');
+                    }
+                }                
+            }
+            getPlayer();
         },[numberPlayer])
 
         useEffect(()=>{
@@ -107,7 +107,6 @@ function Entrainement(){
         },[players])
 
     return (
-        <>
         <Container>
             <Row className="mb-3">
                 <Form onSubmit={handleSubmit}>
@@ -191,7 +190,6 @@ function Entrainement(){
                 </Table>
             </Row>
         </Container>
-        </>
     )
 }
 

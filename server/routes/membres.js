@@ -4,6 +4,8 @@ const express = require("express");
 const mysql = require("mysql");
 // Création d'un router,
 const router = express.Router();
+//import du middleware de vérification du token pour les routes protégé
+const verifyToken = require('../middlewares/authMiddleware');
 
 //Connexion à la database
 const connection = mysql.createConnection({
@@ -23,9 +25,9 @@ connection.connect((error) => {
 // Pour afficher tous les membres
 // request ce que l'on reçois, response ce que l'on envoi
 // get car on veut afficher, / pour racine de /membres
-router.get("/", (request, response) => {
+router.get("/", verifyToken, (request, response) => {
   // Requête
-  connection.query("SELECT * FROM membre", (error, rows, fields) => {
+  connection.query("SELECT * FROM membre",(error, rows, fields) => {
     if (error) {
       throw error;
     }
