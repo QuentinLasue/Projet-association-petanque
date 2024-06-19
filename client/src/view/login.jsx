@@ -10,7 +10,6 @@ function Login(){
         userName:'',
         password:'',
     });
-    // const { login }= useContext(AuthContext);
     const navigate = useNavigate();
     const handleChange=(event)=>{
         // on reprend l'état du state et modifie grace au nom des inputs
