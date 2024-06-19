@@ -5,11 +5,16 @@ import { Image } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import BtnConnexion from './BtnConnexion';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../Auth/AuthContext';
 
 function NavBar() {
     const {isLogged } = useContext(AuthContext);
+    const [loggedIn,setLoggedIn]= useState(isLogged())
+
+    useEffect(() => {
+      setLoggedIn(isLogged());
+    }, [isLogged])
 
   return (
     <header className='mb-5'>
@@ -31,10 +36,12 @@ function NavBar() {
                     <Link to="/tirage">
                         <Button>Tirage</Button>
                     </Link>
-                    {isLogged && 
-                    <Link to="/admin">
+                    {!loggedIn ? (""):(
+                        <Link to="/admin">
                         <Button>Liste des membres</Button>
-                    </Link>}
+                    </Link>
+                    )}
+                     
                 </Nav>
                 <BtnConnexion/>
             </Container>

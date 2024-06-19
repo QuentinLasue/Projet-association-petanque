@@ -13,7 +13,7 @@ function BtnConnexion(){
     }
 return (
     <>
-    {!isLogged? (
+    {!isLogged()? (
         <Link to ="auth/connexion">
             <Button>Connexion</Button>
         </Link>

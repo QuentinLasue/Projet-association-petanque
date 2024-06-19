@@ -6,7 +6,7 @@ function AuthGuard({children}){
     // On utilise le contexte afin de vérifier l'état de connexion
     const {isLogged} = useContext(AuthContext);
     //ici logique de vérification si on est connecté
-if(!isLogged){
+if(!isLogged()){
     return <Navigate to='/auth/connexion'/>
 }
     return children 

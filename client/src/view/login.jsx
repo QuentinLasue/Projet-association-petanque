@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { AuthContext } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Login(){
