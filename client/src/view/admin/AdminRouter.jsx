@@ -5,7 +5,7 @@ function AdminRouter (){
     return (
         <Routes>
             <Route index path="/" />
-            <Route path="/nouvelleUtilisateur" element={<AddUser/>} />
+            <Route path="/nouvelUtilisateur" element={<AddUser/>} />
         </Routes>
     );
 };

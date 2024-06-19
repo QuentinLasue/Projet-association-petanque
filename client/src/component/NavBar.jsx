@@ -4,8 +4,12 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Image } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
+import BtnConnexion from './BtnConnexion';
+import { useContext } from 'react';
+import { AuthContext } from '../Auth/AuthContext';
 
 function NavBar() {
+    const {isLogged } = useContext(AuthContext);
 
   return (
     <header className='mb-5'>
@@ -27,8 +31,12 @@ function NavBar() {
                     <Link to="/tirage">
                         <Button>Tirage</Button>
                     </Link>
+                    {isLogged && 
+                    <Link to="/admin">
+                        <Button>Liste des membres</Button>
+                    </Link>}
                 </Nav>
-                
+                <BtnConnexion/>
             </Container>
         </Navbar>
     </header>

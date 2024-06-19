@@ -30,6 +30,8 @@ const membres = require("./routes/membres");
 app.use("/membres", membres);
 const users = require("./routes/users");
 app.use("/users", users);
+const login = require("./routes/login")
+app.use("/login", login);
 
 // Middleware pour les routes non trouvées (404)
 app.use((req, res, next) => {

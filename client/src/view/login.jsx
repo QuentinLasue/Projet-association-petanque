@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import bcrypt from "bcryptjs-react"
 import { AuthContext } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +10,7 @@ function Login(){
         userName:'',
         password:'',
     });
-    const { login }= useContext(AuthContext);
+    // const { login }= useContext(AuthContext);
     const navigate = useNavigate();
     const handleChange=(event)=>{
         // on reprend l'état du state et modifie grace au nom des inputs
@@ -23,22 +22,29 @@ function Login(){
 
     const handleSubmit = async (event)=>{
         event.preventDefault();
+        setError('');
         if(credentials.userName !=='' && credentials.password !==''){
             if(/^[a-zA-Z0-9]*$/.test(credentials.password) && /^[a-zA-Z]*$/.test(credentials.userName) ){
                 try {
-                    const response = await axios.get(`http://localhost:5000/users/name/${credentials.userName}`);
-                    const passwordMatch = await bcrypt.compare(credentials.password, response.data[0].password);
-                    if(passwordMatch){
-                        // connecté l'utilisateur
-                        login();
-                        // rediriger 
-                        navigate('/admin/nouvelleUtilisateur')
-                    }else {
-                        setError("Mot de passe incorrect.")
-                    }
+                    const response = await axios.post(`http://localhost:5000/login`, {
+                        name : credentials.userName,
+                        password : credentials.password,
+                    });
+                    const { accessToken }= response.data
+                    localStorage.setItem('accessToken', accessToken);
+                    navigate('/admin')
                 } catch (error) {
-                    console.log("Erreur recherche utilisateur : ", error);
-                    setError('Identifiant inconu.');
+                    // Gérer les erreurs
+                    if (error.response) {
+                        // Réponse du serveur avec un code d'état non 2xx
+                        setError(error.response.data.error);
+                    } else if (error.request) {
+                        // La requête a été faite mais aucune réponse n'a été reçue
+                        setError('Erreur de connexion au serveur');
+                    } else {
+                        // Quelque chose s'est passé en configurant la requête qui a déclenché une erreur
+                        setError('Erreur inconnue');
+                    }
                 }
 
             }else{

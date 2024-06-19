@@ -1,25 +1,21 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 
 // création d'un context pour gérer l'état de connection
 const AuthContext = createContext();
 
 const AuthProvider= ({children})=>{
     
-    const [isLoggedIn, setIsLoggedIn]= useState(false);
+    const isLogged = ()=>{
+        let token = localStorage.getItem('accessToken');
 
-    const login = ()=>{
-        setIsLoggedIn(true);
-        console.log("Vous êtes connecté");
-        console.log(isLoggedIn);
+        return !!token;
     };
-    const logout = ()=>{
-        setIsLoggedIn(false);
-        console.log("Vous êtes déconnecté");
-        console.log(isLoggedIn);
 
+    const logout = ()=>{
+        localStorage.removeItem('accessToken');
     }
     return (
-        <AuthContext.Provider value ={{isLoggedIn, login, logout}}>
+        <AuthContext.Provider value ={{isLogged, logout}}>
             {children}
         </AuthContext.Provider>
     )
