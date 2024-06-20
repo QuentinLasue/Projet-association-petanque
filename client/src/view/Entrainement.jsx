@@ -183,6 +183,7 @@ function Entrainement(){
                                 <td>#</td>
                                 <td>Aucun</td>
                                 <td>joueur</td>
+                                <td><Button variant ="outline-secondary" disabled>Supprimer</Button></td>
                             </tr>
                         )
                         }
