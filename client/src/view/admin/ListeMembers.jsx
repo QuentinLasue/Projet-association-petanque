@@ -23,8 +23,32 @@ function ListeMembres(){
 
     }
 
-    const handleDelete=(number)=>{
+    const handleDelete=async (member)=>{
+        const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer ce membre ?");
 
+        if(confirmation){
+            try {
+                const response = await axios.delete("http://localhost:5000/membres/delete",{headers, data: {
+                    number:member.numero,
+                    name: member.nom,
+                    firstName: member.prenom,
+                    }
+                }
+                );
+                if(response.status === 201){
+                    setErreur('');
+                    setSuccess("Membre supprimé avec succès.");
+                }else{
+                    setErreur("Une erreur est survenue lors de la suppression.")
+                }
+            } catch (error) {
+                console.log('Erreur lors de la suppression du membre:', error);
+                setErreur('Une erreur est survenue. Veuillez réessayer.');
+            }
+        }else{
+            setErreur('');
+            setSuccess('')
+        }
     }
 
 
@@ -48,7 +72,7 @@ function ListeMembres(){
 
 return(
     <Container>
-        
+            <span style={{color:'green'}}>{success}</span>
             <span style={{color:'red'}}>{erreur}</span>
             {members.length >0 ? (
                 <>
@@ -96,7 +120,7 @@ return(
                                     <td>{member.nom}</td>
                                     <td>{member.prenom}</td>
                                     <td>
-                                        <Button variant="outline-danger" onClick={()=> handleDelete(member.numero)}>Supprimer</Button>
+                                        <Button variant="outline-danger" onClick={()=> handleDelete(member)}>Supprimer</Button>
                                         <Link to={`/admin/modifier/${member.numero}`}>
                                             <Button variant="outline-primary" className="ms-2">Modifier</Button>
                                         </Link>

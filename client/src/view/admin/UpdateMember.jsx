@@ -43,8 +43,8 @@ function UpdateMember() {
                 prenom: member.prenom,
                 numero: member.numero,
                 oldNumero : numero,
-            },
-            {headers}
+                },
+                {headers}
             );
             if(response.status === 201){
                 setError("");
