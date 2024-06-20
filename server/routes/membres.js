@@ -5,7 +5,7 @@ const mysql = require("mysql");
 // Création d'un router,
 const router = express.Router();
 //import du middleware de vérification du token pour les routes protégé
-const verifyToken = require('../middlewares/authMiddleware');
+const verifyToken = require("../middlewares/authMiddleware");
 
 //Connexion à la database
 const connection = mysql.createConnection({
@@ -27,7 +27,7 @@ connection.connect((error) => {
 // get car on veut afficher, / pour racine de /membres
 router.get("/", verifyToken, (request, response) => {
   // Requête
-  connection.query("SELECT * FROM membre",(error, rows, fields) => {
+  connection.query("SELECT * FROM membre", (error, rows, fields) => {
     if (error) {
       throw error;
     }
@@ -59,9 +59,84 @@ router.get("/:numero", (request, response) => {
     }
   );
 });
-
-// Pour supprimer un membre
+// pour ajouter un membre
+router.post("/addMember", verifyToken, (request, response) => {
+  const { name, firstName, number } = request.body;
+  try {
+    connection.query(
+      "INSERT INTO membre (numero,nom,prenom) VALUES (?,?,?)",
+      [number, name, firstName],
+      (error, result) => {
+        if (error) {
+          console.log("Erreur lors de l'insertion du membre : ", error);
+          response.status(500).json({
+            error: "Erreur interne du serveur lors de la création du membre.",
+          });
+        } else {
+          response.status(201).json({ message: "Membre ajouté avec succès." });
+        }
+      }
+    );
+  } catch (error) {
+    console.log("Erreur lors de l'ajout du membre :", error);
+    response.status(500).json({
+      error: "Erreur interne du serveur lors de l'ajout du membre.",
+    });
+  }
+});
 // pour modifier un membre
+router.post("/updateMember", verifyToken, (request, response) => {
+  const { nom, prenom, numero, oldNumero } = request.body;
+  try {
+    connection.query(
+      "UPDATE membre SET numero = ?, nom = ? , prenom = ? WHERE numero = ?",
+      [numero, nom, prenom, oldNumero],
+      (error, result) => {
+        if (error) {
+          console.log("Erreur lors de la modification du membre : ", error);
+          response.status(500).json({
+            error:
+              "Erreur interne du serveur lors de la modification du membre.",
+          });
+        } else {
+          response.status(201).json({ message: "Membre ajouté avec succès." });
+        }
+      }
+    );
+  } catch (error) {
+    console.log("Erreur lors de la modification du membre :", error);
+    response.status(500).json({
+      error: "Erreur interne du serveur lors de la modification du membre.",
+    });
+  }
+});
+// Pour supprimer un membre
+router.delete("/delete", verifyToken,(request, response)=>{
+const {name, firstName,number}= request.body;
+try {
+  connection.query(
+    "DELETE FROM membre WHERE numero = ? AND nom = ? AND prenom = ?",
+    [number, name, firstName],
+    (error, result)=>{
+      if(error){
+        console.log("Erreur lors de la suppression du membre : ", error);
+        response.status(500).json({
+          error:
+            "Erreur interne du serveur lors de la suppression du membre.",
+        });
+      }else{
+        response.status(201).json({ message: "Membre supprimé avec succès." });
+      }
+    }
+  )
+} catch (error) {
+  console.log("Erreur lors de la suppression du membre : ", error);
+  response.status(500).json({
+    error:
+      "Erreur interne du serveur lors de la suppression du membre.",
+  });
+}
+})
 
 // Permet d'exporter le module pour être réutilisable dans un autre fichier
 module.exports = router;

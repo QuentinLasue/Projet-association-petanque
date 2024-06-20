@@ -46,7 +46,7 @@ function Login(){
                 }
 
             }else{
-                setError("Identifiants ou mot de passe incorect. l'identifiants ne doit contenir que des lettres. et le mot de passe que des lettres ou des chiffres")
+                setError("Identifiants ou mot de passe incorect. L'identifiants ne doit contenir que des lettres. et le mot de passe que des lettres ou des chiffres")
             }
         }else{
             setError("L'identifiant et le mot de passe sont requis")
@@ -57,6 +57,7 @@ return(
     <Container>
         <Row className="justify-content-center">
             <Col md={6} className="m-4 border rounded-5 border-3 border-primary-subtle p-5">
+                <h3 className="mb-3">Connexion</h3>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3" controlId="formBasicName">
                         <Form.Label>Identifiant</Form.Label>

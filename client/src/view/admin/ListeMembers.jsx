@@ -112,7 +112,7 @@ return(
             :
             (
                 <Row className="m-3 justify-content-center">
-                    <h1 className="mb-3">Vous n'avez pas pu récupérer les membres.</h1>
+                    <h1 className="mb-3">Vous n'avez pas pu récupérer les membres. Reconnectez-vous.</h1>
                     <Link to={`/`}>
                         <Button variant="primary" className="mb-3">Retour à la liste des joueurs</Button>
                     </Link>

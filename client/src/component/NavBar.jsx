@@ -23,9 +23,10 @@ function NavBar() {
                 <Navbar.Brand>
                     <Link to="/">
                         <Image 
-                            width="120"
-                            height="60"
-                            src='../logo.jpg'
+                            width="80"
+                            height="80"
+                            src='../logoAPBBlanc.png'
+                            rounded
                         />
                     </Link>
                 </Navbar.Brand>

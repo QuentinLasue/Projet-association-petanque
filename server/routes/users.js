@@ -6,6 +6,7 @@ const mysql = require("mysql");
 const router = express.Router();
 // pour le hashage du mdp
 const bcrypt = require("bcrypt");
+const verifyToken = require("../middlewares/authMiddleware");
 
 // Connexion a la base de donnée
 const connection = mysql.createConnection({
@@ -79,7 +80,7 @@ router.get("/name/:name", (request, response) => {
   );
 });
 
-router.post("/", async (request, response) => {
+router.post("/",verifyToken, async (request, response) => {
   const { name, password } = request.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);

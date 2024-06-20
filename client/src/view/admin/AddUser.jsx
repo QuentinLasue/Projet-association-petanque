@@ -10,6 +10,13 @@ function AddUser(){
         password:'',
         confirmPassword:''
     });
+    // Récupération du token dans le local storage sui il existe
+    const token = localStorage.getItem('accessToken');
+    // Configuration du headers pour inclure le token JWT
+    const headers = {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+    };
 
     const handleChange=(event)=>{
         setNewUser({
@@ -52,7 +59,8 @@ function AddUser(){
                         const createResponse = await axios.post(`http://localhost:5000/users`,{
                             name: newUser.userName,
                             password: newUser.password,
-                        }); 
+                        },
+                    {headers}); 
                         if(createResponse.status === 201){
                             setSuccess("Utilisateur ajouté.");
                             setError('');
