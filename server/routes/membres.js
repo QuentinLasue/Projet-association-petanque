@@ -111,32 +111,61 @@ router.post("/updateMember", verifyToken, (request, response) => {
   }
 });
 // Pour supprimer un membre
-router.delete("/delete", verifyToken,(request, response)=>{
-const {name, firstName,number}= request.body;
-try {
-  connection.query(
-    "DELETE FROM membre WHERE numero = ? AND nom = ? AND prenom = ?",
-    [number, name, firstName],
-    (error, result)=>{
-      if(error){
-        console.log("Erreur lors de la suppression du membre : ", error);
-        response.status(500).json({
-          error:
-            "Erreur interne du serveur lors de la suppression du membre.",
-        });
-      }else{
-        response.status(201).json({ message: "Membre supprimé avec succès." });
+router.delete("/delete", verifyToken, (request, response) => {
+  const { name, firstName, number } = request.body;
+  try {
+    connection.query(
+      "DELETE FROM membre WHERE numero = ? AND nom = ? AND prenom = ?",
+      [number, name, firstName],
+      (error, result) => {
+        if (error) {
+          console.log("Erreur lors de la suppression du membre : ", error);
+          response.status(500).json({
+            error:
+              "Erreur interne du serveur lors de la suppression du membre.",
+          });
+        } else {
+          response
+            .status(201)
+            .json({ message: "Membre supprimé avec succès." });
+        }
       }
-    }
-  )
-} catch (error) {
-  console.log("Erreur lors de la suppression du membre : ", error);
-  response.status(500).json({
-    error:
-      "Erreur interne du serveur lors de la suppression du membre.",
-  });
-}
-})
+    );
+  } catch (error) {
+    console.log("Erreur lors de la suppression du membre : ", error);
+    response.status(500).json({
+      error: "Erreur interne du serveur lors de la suppression du membre.",
+    });
+  }
+});
+// Pour la recherche dans la liste des membres
+router.get("/search/liste", verifyToken, (request, response) => {
+  const { searchValue } = request.query; // ou request.query pour get
+  const searchPattern = `%${searchValue}%`;
+  try {
+    connection.query(
+      "SELECT * FROM membre WHERE nom LIKE ? OR prenom LIKE ? OR numero LIKE ?",
+      [searchPattern, searchPattern, searchValue],
+      (error, rows) => {
+        if (error) {
+          return response
+            .status(500)
+            .json({ error: "Une erreur est survenue lors de la recherche." });
+        }
+
+        if (rows.length === 0) {
+          return response.status(404).json({ error: "Aucun membre trouvé." });
+        }
+        response.json(rows);
+      }
+    );
+  } catch (error) {
+    console.log("Erreur lors de la recherche de membre : ", error);
+    response.status(500).json({
+      error: "Erreur interne du serveur lors de la recherche de membre.",
+    });
+  }
+});
 
 // Permet d'exporter le module pour être réutilisable dans un autre fichier
 module.exports = router;

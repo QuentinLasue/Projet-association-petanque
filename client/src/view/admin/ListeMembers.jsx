@@ -2,12 +2,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Col, Container, Form, InputGroup, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import BtnPage from "../../component/BtnPage";
 
 function ListeMembres(){
     const [members, setMembers]= useState([]);
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
-    const[searchValue, setSearchValue]= useState('');
+    // gestion de la recherche
+    const [searchValue, setSearchValue]= useState('');
+    // gestion de la pagination
+    const [page, setPage]= useState(1);
+    const memberPerPage=20;
+    const indexLastMember = page * memberPerPage;
+    const indexFirstMember = indexLastMember - memberPerPage;
+    const membersDisplay = Array.isArray(members) ? members.slice(indexFirstMember, indexLastMember) : members;
+    const nbrPage = members.length / memberPerPage;
     // Récupération du token dans le local storage sui il existe
     const token = localStorage.getItem('accessToken');
     // Configuration du headers pour inclure le token JWT
@@ -16,11 +25,13 @@ function ListeMembres(){
         Authorization: `Bearer ${token}`,
     };
 
-    const handleSubmit=()=>{
-
+    const handleSubmit=(event)=>{
+        event.preventDefault();
+        // pas necessaire si la recherche se fais dans le useffect 
     }
-    const handleChange=()=>{
-
+    const handleChange=(event)=>{
+        const results = event.target.value.replace( /[^a-zA-ZÀ-ÖØ-öø-ÿ0-9'-]/g, '');
+        setSearchValue(results);
     }
 
     const handleDelete=async (member)=>{
@@ -50,31 +61,57 @@ function ListeMembres(){
             setSuccess('')
         }
     }
-
-
-    useEffect(()=>{
-        const getMembers= async()=>{
-            try {
-                const response = await axios.get("http://localhost:5000/membres",{headers});
-                setMembers(response.data);
-                setErreur('');
-            } catch (error) {
-                console.log('Erreur lors de l\'appel API', error);
-                if(error.response && error.response === 403){
-                    setErreur("Vous n'êtes pas connecté.");
-                } else {
-                    setErreur("Erreur lors de la requête API.");
-                }
+    const getMembers= async()=>{
+        try {
+            const response = await axios.get("http://localhost:5000/membres",{headers});
+            setMembers(response.data);
+            setErreur('');
+            setSuccess('');
+        } catch (error) {
+            console.log('Erreur lors de l\'appel API', error);
+            if(error.response && error.response === 403){
+                setErreur("Vous n'êtes pas connecté.");
+            } else {
+                setErreur("Erreur lors de la requête API.");
             }
         }
-        getMembers();
-    },[members]);
+    }
+
+    const getSearch = async (value)=>{
+        try {
+            const response = await axios.get("http://localhost:5000/membres/search/liste", {
+                params: {searchValue : value},
+                headers
+            });
+            console.log(response.data);
+            if(response.status === 404){
+                setErreur('Aucun membre ne correspond à cette recherche.')
+                setMembers([]);
+            } else {
+                setErreur('');
+                setSuccess('');
+                setMembers(response.data);
+            }
+        } catch (error) {
+            console.log('Erreur lors de l\'appel API', error);
+            setSuccess("");
+            setErreur("Erreur survenue lors de la requête API.")
+        }
+    }
+
+    useEffect(()=>{
+        if(!searchValue){
+            getMembers();
+        }else{
+            getSearch(searchValue);
+        }
+    },[searchValue]);
 
 return(
     <Container>
             <span style={{color:'green'}}>{success}</span>
             <span style={{color:'red'}}>{erreur}</span>
-            {members.length >0 ? (
+            {membersDisplay.length >0 ? (
                 <>
                 <Row className="mb-3">
                     <h1 className="mb-3">Liste des membres :</h1>
@@ -89,6 +126,7 @@ return(
                                 aria-describedby="namePlayer"
                                 required
                                 onChange={handleChange}
+                                value={searchValue}
                                 />
                                 <Button variant="outline-primary" id="button-namePlayer" type="submit">
                                     Rechercher
@@ -114,7 +152,7 @@ return(
                         </thead>
                         <tbody>
                             {
-                                members.map((member,index)=>(
+                                membersDisplay.map((member,index)=>(
                                     <tr key={index}>
                                     <td>{member.numero}</td>
                                     <td>{member.nom}</td>
@@ -131,6 +169,7 @@ return(
                         </tbody>
                     </Table>
                 </Row>
+                <BtnPage page={page} setPage={setPage} nbrPage={nbrPage} />
             </>
             )
             :
