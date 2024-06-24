@@ -1,8 +1,6 @@
-import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Image } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
+import { Col, Image, Row, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import BtnConnexion from './BtnConnexion';
 import { useContext, useEffect, useState } from 'react';
@@ -18,8 +16,7 @@ function NavBar() {
 
   return (
     <header className='mb-5'>
-        <Navbar bg="primary" data-bs-theme="dark">
-            <Container>
+        <Navbar bg="primary" data-bs-theme="dark" className='justify-content-between'>
                 <Navbar.Brand>
                     <Link to="/">
                         <Image 
@@ -27,7 +24,7 @@ function NavBar() {
                             height="80"
                             src='../logoAPBBlanc.png'
                             rounded
-                        />
+                            />
                     </Link>
                 </Navbar.Brand>
                 <Nav className="me-auto">
@@ -45,7 +42,6 @@ function NavBar() {
                      
                 </Nav>
                 <BtnConnexion/>
-            </Container>
         </Navbar>
     </header>
   );

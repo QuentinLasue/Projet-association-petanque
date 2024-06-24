@@ -143,49 +143,51 @@ return(
                     </Col>
                 </Row>
                 <Row>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Numéro</th>
-                                <th>Nom</th>
-                                <th>Prénom</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {membersDisplay.length>0 ? (
-                                <>
-                                {
-                                membersDisplay.map((member,index)=>(
-                                    <tr key={index}>
-                                        <td>{member.numero}</td>
-                                        <td>{member.nom}</td>
-                                        <td>{member.prenom}</td>
-                                        <td>
-                                            <Button variant="outline-danger" onClick={()=> handleDelete(member)}>Supprimer</Button>
-                                            <Link to={`/admin/modifier/${member.numero}`}>
-                                                <Button variant="outline-primary" className="ms-2">Modifier</Button>
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                    ))
-                                }
-                                </>
-                            ):(
-                                <>
+                    <Col>
+                        <Table striped bordered hover responsive size='sm'>
+                            <thead>
                                 <tr>
-                                <td>#</td>
-                                <td>Aucun</td>
-                                <td>Membre</td>
-                                <td>
-                                    <Button variant="outline-secondary" disabled>Supprimer</Button>
-                                    <Button variant="outline-secondary" disabled className="ms-2">Modifier</Button>
-                                </td>
-                            </tr>
-                                </>
-                            )}
-                        </tbody>
-                    </Table>
+                                    <th>#</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {membersDisplay.length>0 ? (
+                                    <>
+                                    {
+                                        membersDisplay.map((member,index)=>(
+                                            <tr key={index}>
+                                            <td>{member.numero}</td>
+                                            <td>{member.nom}</td>
+                                            <td>{member.prenom}</td>
+                                            <td>
+                                                <Button variant="outline-danger" onClick={()=> handleDelete(member)}>Supprimer</Button>
+                                                <Link to={`/admin/modifier/${member.numero}`}>
+                                                    <Button variant="outline-primary" className="ms-2">Modifier</Button>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                        ))
+                                    }
+                                    </>
+                                ):(
+                                    <>
+                                    <tr>
+                                    <td>#</td>
+                                    <td>Aucun</td>
+                                    <td>Membre</td>
+                                    <td>
+                                        <Button variant="outline-secondary" disabled>Supprimer</Button>
+                                        <Button variant="outline-secondary" disabled className="ms-2">Modifier</Button>
+                                    </td>
+                                </tr>
+                                    </>
+                                )}
+                            </tbody>
+                        </Table>
+                    </Col>
                 </Row>
                 <BtnPage page={page} setPage={setPage} nbrPage={nbrPage} />
             </>

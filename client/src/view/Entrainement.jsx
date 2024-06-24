@@ -157,38 +157,40 @@ function Entrainement(){
                 </Link>
             </Row>
             <Row>
-                <h2>Liste des joueurs inscrits :</h2>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Numéro</th>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                        (players.length >=1)?(
-                            players.map((player,index)=>(
-                                <tr key={index}>
-                                    <td>{player.numero}</td>
-                                    <td>{player.nom}</td>
-                                    <td>{player.prenom}</td>
-                                    <td><Button variant="outline-danger" onClick={()=>handleDelete(player.numero)}>Supprimer</Button></td>
-                                </tr>
-                        ))
+                <Col>
+                    <h2>Liste des joueurs inscrits :</h2>
+                    <Table striped bordered hover size='sm' responsive>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                (players.length >=1)?(
+                                    players.map((player,index)=>(
+                                        <tr key={index}>
+                                        <td>{player.numero}</td>
+                                        <td>{player.nom}</td>
+                                        <td>{player.prenom}</td>
+                                        <td><Button variant="outline-danger" onClick={()=>handleDelete(player.numero)}>Supprimer</Button></td>
+                                    </tr>
+                            ))
                         ):(
                             <tr>
-                                <td>#</td>
-                                <td>Aucun</td>
-                                <td>joueur</td>
-                                <td><Button variant ="outline-secondary" disabled>Supprimer</Button></td>
-                            </tr>
-                        )
+                                    <td>#</td>
+                                    <td>Aucun</td>
+                                    <td>joueur</td>
+                                    <td><Button variant ="outline-secondary" disabled>Supprimer</Button></td>
+                                </tr>
+                            )
                         }
-                    </tbody>
-                </Table>
+                        </tbody>
+                    </Table>
+                </Col>
             </Row>
         </Container>
     )
