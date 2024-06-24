@@ -55,7 +55,11 @@ function UpdateMember() {
 
         } catch (error) {
             console.log('Erreur lors de la modification du membre:', error);
-            setError('Une erreur est survenue. Veuillez réessayer.');
+            if(error.response && error.response.data.error){
+                setError(error.response.data.error);
+            }else{
+                setError('Une erreur est survenue. Veuillez réessayer.');
+            }
         }        
     }
     const handleSubmit=(event)=>{

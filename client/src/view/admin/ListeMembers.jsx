@@ -49,6 +49,7 @@ function ListeMembres(){
                 if(response.status === 201){
                     setErreur('');
                     setSuccess("Membre supprimé avec succès.");
+                    setMembers(members.filter(m=>m.numero !== member.numero))
                 }else{
                     setErreur("Une erreur est survenue lors de la suppression.")
                 }
