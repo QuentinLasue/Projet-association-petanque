@@ -16,33 +16,46 @@ function NavBar() {
 
   return (
     <header className='mb-5'>
-        <Navbar bg="primary" data-bs-theme="dark" className='justify-content-between'>
-                <Navbar.Brand>
-                    <Link to="/">
-                        <Image 
-                            width="80"
-                            height="80"
-                            src='../logoAPBBlanc.png'
-                            rounded
-                            />
-                    </Link>
-                </Navbar.Brand>
-                <Nav className="me-auto">
-                    <Link to="/">
-                        <Button>Liste des joueurs</Button>
-                    </Link>
-                    <Link to="/tirage">
-                        <Button>Tirage</Button>
-                    </Link>
-                    {!loggedIn ? (""):(
-                        <Link to="/admin">
-                        <Button>Liste des membres</Button>
-                    </Link>
+
+        <Navbar expand="md" className="bg-primary" variant="dark">
+      <Container>
+        <Navbar.Brand>
+            <Link to="/">
+                <Image 
+                    width="80"
+                    height="80"
+                    src='../logoAPBBlanc.png'
+                    rounded
+                    />
+            </Link>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link >
+                <Link to="/">
+                    <Button>Liste des joueurs</Button>
+                </Link>
+            </Nav.Link>
+            <Nav.Link>
+                <Link to="/tirage">
+                    <Button>Tirage</Button>
+                </Link>
+            </Nav.Link>
+            {!loggedIn ? (""):(
+            <Nav.Link>
+                <Link to="/admin">
+                    <Button>Liste des membres</Button>
+                </Link>
+            </Nav.Link>
                     )}
-                     
-                </Nav>
-                <BtnConnexion/>
-        </Navbar>
+          </Nav>
+          <Nav>
+            <BtnConnexion/>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
     </header>
   );
   }
