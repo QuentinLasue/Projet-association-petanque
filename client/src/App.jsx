@@ -10,6 +10,7 @@ import AuthGuard from './authGuard/AuthGuard';
 import AdminRouter from './view/admin/AdminRouter';
 import { AuthProvider } from './Auth/AuthContext';
 import Footer from './component/Footer';
+import { Container } from 'react-bootstrap';
 
 function App() {
 
@@ -17,22 +18,25 @@ function App() {
     <>
     <AuthProvider>
       <BrowserRouter>
-        <NavBar/>
-    
-        <Routes>
-          <Route index path="/" element={<Entrainement/>}></Route>
-          <Route path="/tirage" element={<Tirage/>}></Route>
-          <Route path="/limiteNombrePartie" element={<LimiteNombrePartie/>}></Route>
-          <Route path="/auth/*" element={<AuthRouter/>}></Route>
-          <Route path="/admin/*" element={
-            <AuthGuard>
-              <AdminRouter/>
-            </AuthGuard>
-          }></Route>
-          <Route path="*" element={<Error/>}></Route> 
-          {/* <Route path="/tirage/:numberPlayerTeam" element={<Tirage/>}></Route> */}
-        </Routes>
-        <Footer/>
+        <div className='app-container'>
+          <NavBar/>
+          <Container className='flex-grow-1'>
+            <Routes>
+              <Route index path="/" element={<Entrainement/>}></Route>
+              <Route path="/tirage" element={<Tirage/>}></Route>
+              <Route path="/limiteNombrePartie" element={<LimiteNombrePartie/>}></Route>
+              <Route path="/auth/*" element={<AuthRouter/>}></Route>
+              <Route path="/admin/*" element={
+                <AuthGuard>
+                  <AdminRouter/>
+                </AuthGuard>
+              }></Route>
+              <Route path="*" element={<Error/>}></Route> 
+              {/* <Route path="/tirage/:numberPlayerTeam" element={<Tirage/>}></Route> */}
+            </Routes>
+          </Container>
+          <Footer/>
+        </div>
       </BrowserRouter>
     </AuthProvider>
     </>

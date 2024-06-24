@@ -3,8 +3,18 @@
   margin: 0 auto;
   /* padding: 2rem; */
   text-align: center;
+  height: 100%;
 }
 
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.flex-grow-1 {
+  flex: 1;
+}
 /* .logo {
   height: 6em;
   padding: 1.5em;
