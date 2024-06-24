@@ -152,21 +152,37 @@ return(
                             </tr>
                         </thead>
                         <tbody>
-                            {
+                            {membersDisplay.length>0 ? (
+                                <>
+                                {
                                 membersDisplay.map((member,index)=>(
                                     <tr key={index}>
-                                    <td>{member.numero}</td>
-                                    <td>{member.nom}</td>
-                                    <td>{member.prenom}</td>
-                                    <td>
-                                        <Button variant="outline-danger" onClick={()=> handleDelete(member)}>Supprimer</Button>
-                                        <Link to={`/admin/modifier/${member.numero}`}>
-                                            <Button variant="outline-primary" className="ms-2">Modifier</Button>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                ))
-                            }
+                                        <td>{member.numero}</td>
+                                        <td>{member.nom}</td>
+                                        <td>{member.prenom}</td>
+                                        <td>
+                                            <Button variant="outline-danger" onClick={()=> handleDelete(member)}>Supprimer</Button>
+                                            <Link to={`/admin/modifier/${member.numero}`}>
+                                                <Button variant="outline-primary" className="ms-2">Modifier</Button>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                    ))
+                                }
+                                </>
+                            ):(
+                                <>
+                                <tr>
+                                <td>#</td>
+                                <td>Aucun</td>
+                                <td>Membre</td>
+                                <td>
+                                    <Button variant="outline-secondary" disabled>Supprimer</Button>
+                                    <Button variant="outline-secondary" disabled className="ms-2">Modifier</Button>
+                                </td>
+                            </tr>
+                                </>
+                            )}
                         </tbody>
                     </Table>
                 </Row>

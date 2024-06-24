@@ -9,6 +9,7 @@ import AuthRouter from './Auth/AuthRouter';
 import AuthGuard from './authGuard/AuthGuard';
 import AdminRouter from './view/admin/AdminRouter';
 import { AuthProvider } from './Auth/AuthContext';
+import Footer from './component/Footer';
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="*" element={<Error/>}></Route> 
           {/* <Route path="/tirage/:numberPlayerTeam" element={<Tirage/>}></Route> */}
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </AuthProvider>
     </>
