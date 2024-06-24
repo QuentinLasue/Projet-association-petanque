@@ -69,7 +69,7 @@ function ListeMembres(){
             setSuccess('');
         } catch (error) {
             console.log('Erreur lors de l\'appel API', error);
-            if(error.response && error.response === 403){
+            if(error.response && error.response.status === 403){
                 setErreur("Vous n'êtes pas connecté.");
             } else {
                 setErreur("Erreur lors de la requête API.");
@@ -83,35 +83,34 @@ function ListeMembres(){
                 params: {searchValue : value},
                 headers
             });
-            console.log(response.data);
-            if(response.status === 404){
-                setErreur('Aucun membre ne correspond à cette recherche.')
-                setMembers([]);
-            } else {
                 setErreur('');
                 setSuccess('');
                 setMembers(response.data);
-            }
         } catch (error) {
-            console.log('Erreur lors de l\'appel API', error);
-            setSuccess("");
-            setErreur("Erreur survenue lors de la requête API.")
+            if(error.response && error.response.status === 404){
+                setErreur('Aucun membre ne correspond à cette recherche.')
+                setMembers([]);
+            }else{
+                console.log('Erreur lors de l\'appel API', error);
+                setSuccess("");
+                setErreur("Erreur survenue lors de la requête API.");
+            }
         }
     }
 
     useEffect(()=>{
         if(!searchValue){
+            setPage(1);
             getMembers();
         }else{
+            setPage(1);
             getSearch(searchValue);
         }
     },[searchValue]);
 
 return(
     <Container>
-            <span style={{color:'green'}}>{success}</span>
-            <span style={{color:'red'}}>{erreur}</span>
-            {membersDisplay.length >0 ? (
+            {token ? (
                 <>
                 <Row className="mb-3">
                     <h1 className="mb-3">Liste des membres :</h1>
@@ -133,6 +132,8 @@ return(
                                 </Button>
                             </InputGroup>
                         </Form>
+                    <span style={{color:'green'}}>{success}</span>
+                    <span style={{color:'red'}}>{erreur}</span>
                     </Col>
                     <Col>
                     <Link to="/admin/ajoutJoueur">

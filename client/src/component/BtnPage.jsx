@@ -16,16 +16,21 @@ function BtnPage({ page, setPage, nbrPage }) {
 
   return (
     <Row>
-      <Col className="text-center">
-        <Button variant="primary" onClick={previousPage} id="btnPrevious">
-          Page Précédente
-        </Button>
-      </Col>
-      <Col className="text-center">
-        <Button variant="primary" onClick={nextPage} id="btnNext">
-          Page suivante
-        </Button>
-      </Col>
+      {nbrPage>1 ?(
+        <>
+          <Col className="text-center">
+            <Button variant="primary" onClick={previousPage} id="btnPrevious">
+              Page Précédente
+            </Button>
+          </Col>
+          <Col className="text-center">
+            <Button variant="primary" onClick={nextPage} id="btnNext">
+              Page suivante
+            </Button>
+          </Col>
+        </>
+      ):("") 
+      }
     </Row>
   );
 }
