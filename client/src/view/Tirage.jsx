@@ -82,14 +82,14 @@ function Tirage(){
                     // }else {
                     //     selectRandomPlayer(player);
                     // }
-            }else if(teams.length>0 && teams.some(team => team.length === 2)){
+            }else if(teams.length>0 && teams.some(team => team.length === teamSize)){
                 // si pas de joueurs possible restant, on parcours les équipes à la recherche d'un joueurs possible
                 for(const team of teams) {
 
                     if(permutationLimit <= 0){
                         setPlayersAlone([...playersAlone, player]);
                         remainingPlayers.delete(player);
-                        setConstraintsError("La formation des équipes est impossible en respecatant les contraintes de coéquipiers. Vous pouvez réinitialiser la liste d'équipes.");
+                        setConstraintsError("La formation des équipes est impossible en respectant les contraintes de coéquipiers. Vous pouvez réinitialiser la liste d'équipes.");
                         break;
                     }
                     const validPartner = team.find(p => !player.teammates.includes(p.numero));
@@ -215,7 +215,7 @@ function Tirage(){
     }
 
     const createTeams = ()=>{
-        if(players.length>=4){
+        if(players.length>=8){
             setTryTocreated(true);
             setNbrDraw(nbrDraw+1);
             if(nbrDraw>3){
@@ -241,7 +241,7 @@ function Tirage(){
             }
             setTeamsFinish(teams);
         }else{
-            setError("Il faut 4 joueurs minimum pour former des équipes.")
+            setError("Il faut 8 joueurs minimum pour former des équipes valident pour les 4 parties.")
         }
     }   
     const deleteDraw = ()=> {
