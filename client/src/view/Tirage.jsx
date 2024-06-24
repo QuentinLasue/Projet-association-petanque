@@ -20,6 +20,7 @@ function Tirage(){
     const remainingPlayers = new Set(players);
     // Pour afficher un msg d'erreur si les équipes ne peuvent pu être créer a cause des contraintes
     const [contraintsError, setConstraintsError]= useState("");
+    const[error, setError]=useState("");
     let currentTeam = [];
     // protection boucle trop grande 
     let permutationLimit = 50;
@@ -214,30 +215,34 @@ function Tirage(){
     }
 
     const createTeams = ()=>{
-        setTryTocreated(true);
-        setNbrDraw(nbrDraw+1);
-        if(nbrDraw>3){
-            navigate('/limiteNombrePartie');
-            return;
-        }
-        while(remainingPlayers.size !=0){
-            // Formations des  équipes 
-            const shuffleList = shuffleArray(Array.from(remainingPlayers));
-            for (const player of shuffleList){
-                if(currentTeam.length < teamSize){
-                    selectRandomPlayer(player);
-                    // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
-                    if(currentTeam.length === teamSize){
-                        teams.push(currentTeam);
-                        currentTeam = [];
+        if(players.length>=4){
+            setTryTocreated(true);
+            setNbrDraw(nbrDraw+1);
+            if(nbrDraw>3){
+                navigate('/limiteNombrePartie');
+                return;
+            }
+            while(remainingPlayers.size !=0){
+                // Formations des  équipes 
+                const shuffleList = shuffleArray(Array.from(remainingPlayers));
+                for (const player of shuffleList){
+                    if(currentTeam.length < teamSize){
+                        selectRandomPlayer(player);
+                        // si la longeur de l'équipe est atteinte ou tous les joueurs on été assigné a une équipe (pour gérer un nombre de joueurs impaire)
+                        if(currentTeam.length === teamSize){
+                            teams.push(currentTeam);
+                            currentTeam = [];
+                        }
                     }
                 }
             }
+            if (teams.length % 2 !== 0 ){
+                teamBalancing();
+            }
+            setTeamsFinish(teams);
+        }else{
+            setError("Il faut 4 joueurs minimum pour former des équipes.")
         }
-        if (teams.length % 2 !== 0 ){
-            teamBalancing();
-        }
-        setTeamsFinish(teams);
     }   
     const deleteDraw = ()=> {
         setMatchs([]);
@@ -319,6 +324,7 @@ function Tirage(){
                         <>
                         <h1 className="mb-3">Vous n'avez pas encore lancer le tirage.</h1>
                         <Button variant="warning" size="lg" onClick={createTeams}>Lancer le tirage</Button>
+                        <p className="mb-3 text-danger">{error} </p>
                         </>
                     )}
                     </>
