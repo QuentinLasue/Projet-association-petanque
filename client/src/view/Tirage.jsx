@@ -159,19 +159,21 @@ function Tirage(){
     }
     // tirage au sort des rencontres
     const randomDrawMatchs = ()=>{
-        // Sépare les équipes de 2 et 3 joueurs 
-        const teamOf3 = teamsFinish.filter(team=> team.length ===3);
-        const teamOf2 = teamsFinish.filter(team=> team.length ===2);
-        // Sachant que le nombre d'équipe total est paires, si un des groupes est impaires 
-        if(teamOf3.length %2 !== 0 ){
-            // alors on prend une équipe de 3 et on le met dans le groupe de 2
-            const teamToMove = teamOf3.pop();
-            teamOf2.push(teamToMove);
+        if(matchs.length ===0){
+            // Sépare les équipes de 2 et 3 joueurs 
+            const teamOf3 = teamsFinish.filter(team=> team.length ===3);
+            const teamOf2 = teamsFinish.filter(team=> team.length ===2);
+            // Sachant que le nombre d'équipe total est paires, si un des groupes est impaires 
+            if(teamOf3.length %2 !== 0 ){
+                // alors on prend une équipe de 3 et on le met dans le groupe de 2
+                const teamToMove = teamOf3.pop();
+                teamOf2.push(teamToMove);
+            }
+            drawMatchs(teamOf3);
+            drawMatchs(teamOf2);
+    
+            setMatchs(newMatch);
         }
-        drawMatchs(teamOf3);
-        drawMatchs(teamOf2);
-
-        setMatchs(newMatch);
     }
     const drawMatchs = (teams)=>{
         // Pour stocker les équipes non attribuer pour le tirage au sort 
@@ -255,11 +257,9 @@ function Tirage(){
         }
     }
     const cancelDraw= ()=>{
-        // retirer le partenaire actuelle de la liste de toutes les équipes
-        // enlever 1 a nbr draw dans le local storage et ici 
-        // effacer les équipe et les matchs
         let confirm = window.confirm("Êtes-vous sure de vouloir annuler le tirage ?");
         if(confirm){
+            // on retire les joueurs de la liste des joueurs interdit les uns des autres
             for(let team of teamsFinish){
                 removeTeammatesList(team[0], team[1].numero);
                 removeTeammatesList(team[1], team[0].numero);
@@ -270,6 +270,7 @@ function Tirage(){
                     removeTeammatesList(team[2],team[1].numero);
                 }
             }
+            // on réinitialise les équipes, les matchs, et on retire un aux nombre de tirage effectué
             setNbrDraw(nbrDraw-1);
             setTeamsFinish([]);
             setMatchs([]);
@@ -277,7 +278,7 @@ function Tirage(){
         }
     }
     useEffect(()=>{
-        if(teamsFinish.length > 0){
+        if(teamsFinish.length > 0 ){
             randomDrawMatchs();
         }
    },[teamsFinish]) // à exécuter à la mise a jours de teamsfinish

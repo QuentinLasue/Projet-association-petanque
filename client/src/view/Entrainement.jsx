@@ -37,15 +37,15 @@ function Entrainement(){
         }
         const handleDelete = (numero)=>{
             // demande de confirmation de suppression
-            const confirmation = window.confirm("Êtes-vous sûr de vouloir retirer ce joueur ? Si il y a un tirage en cours il seras éffacé.");
+            const confirmation = window.confirm("Êtes-vous sûr de vouloir retirer ce joueur ?");
 
             if(confirmation){
                 // Créations d'un nouveau tableau en excluant celui qui a le numero reçu
                 const updatePlayers = players.filter((player)=> player.numero !== numero);
                 setPlayers(updatePlayers);
                 setErreur('');
-                localStorage.setItem('matchs', JSON.stringify([]));
-                localStorage.setItem('teams', JSON.stringify([]));
+                // localStorage.setItem('matchs', JSON.stringify([]));
+                // localStorage.setItem('teams', JSON.stringify([]));
                 setSuccess("Le joueur à été retiré.");
             }else{
                 setErreur("");
