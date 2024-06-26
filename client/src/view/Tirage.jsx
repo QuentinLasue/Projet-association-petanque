@@ -245,11 +245,36 @@ function Tirage(){
         }
     }   
     const deleteDraw = ()=> {
-        setMatchs([]);
-        setTeamsFinish([]);
-        setTryTocreated(false);
-        setPlayersAlone([]);
-        createTeams();
+        let confirm = window.confirm("Êtes-vous sure de vouloir tirer le tirage suivant ? celui en cours seras éffacé.");
+        if(confirm){
+            setMatchs([]);
+            setTeamsFinish([]);
+            setTryTocreated(false);
+            setPlayersAlone([]);
+            createTeams();
+        }
+    }
+    const cancelDraw= ()=>{
+        // retirer le partenaire actuelle de la liste de toutes les équipes
+        // enlever 1 a nbr draw dans le local storage et ici 
+        // effacer les équipe et les matchs
+        let confirm = window.confirm("Êtes-vous sure de vouloir annuler le tirage ?");
+        if(confirm){
+            for(let team of teamsFinish){
+                removeTeammatesList(team[0], team[1].numero);
+                removeTeammatesList(team[1], team[0].numero);
+                if(team.length === 3 ){
+                    removeTeammatesList(team[0],team[2].numero);
+                    removeTeammatesList(team[1],team[2].numero);
+                    removeTeammatesList(team[2],team[0].numero);
+                    removeTeammatesList(team[2],team[1].numero);
+                }
+            }
+            setNbrDraw(nbrDraw-1);
+            setTeamsFinish([]);
+            setMatchs([]);
+            setTryTocreated(false);
+        }
     }
     useEffect(()=>{
         if(teamsFinish.length > 0){
@@ -286,11 +311,12 @@ function Tirage(){
                 }
                 { teamsFinish.length > 0  && matchs.length>0 ?(
                     <>
-                    <h1 className="mb-3">Tirage des équipes : </h1>
+                    <Row className="justify-content-center mb-3">
+                    <h1 className="mb-3">Tirage n°{nbrDraw} : </h1>
                     {
-                    matchs.map((match,index)=>(
-                        <Row className="justify-content-center mb-3" key={index}>
-                            <Card  border="primary" className="m-2 w-25 p-0">
+                        matchs.map((match,index)=>(
+                            <Col md={5} className="mb-3 d-flex justify-content-center" key={index}>
+                            <Card  border="primary" className="w-50 p-0">
                                 <Card.Header className="bg-primary fw-bold text-light">Equipe n°{match.team1 +1}</Card.Header>
                                 <ListGroup variant="">
                                     {teamsFinish[match.team1].map((player,idx)=>(
@@ -298,10 +324,10 @@ function Tirage(){
                                     ))}
                                 </ListGroup>
                             </Card>
-                                <Col md={1} className="d-flex align-items-center justify-content-center">
+                                <div className="d-flex align-items-center justify content center mx-2">
                                     <h2 className="fw-bold fst-italic">Vs</h2>
-                                </Col>
-                            <Card  border="primary" className="m-2 w-25 p-0">
+                                </div>
+                            <Card  border="primary" className="w-50 p-0">
                                 <Card.Header className="bg-primary fw-bold text-light">Equipe n°{match.team2 +1}</Card.Header>
                                 <ListGroup variant="">
                                     {teamsFinish[match.team2].map((player,idx)=>(
@@ -309,9 +335,17 @@ function Tirage(){
                                         ))}
                                 </ListGroup>
                             </Card>
-                        </Row>
+                            </Col>
                     ))}
-                    <Button variant="warning" size="lg" onClick={deleteDraw}>Passer aux tirage suivant</Button>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="danger" size="lg" onClick={cancelDraw}>Annuler le tirage en cours</Button>
+                        </Col>
+                        <Col>
+                            <Button variant="warning" size="lg" onClick={deleteDraw}>Passer aux tirage suivant</Button>
+                        </Col>
+                    </Row>
                     </>
                 ):(
                     <>

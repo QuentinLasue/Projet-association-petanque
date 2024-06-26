@@ -14,6 +14,8 @@ function Entrainement(){
     // variable pour affichage d'un message d'erreur et de succes
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
+    const [isSticky, setSticky] = useState(false);
+
 
         // pour gérer si on entre autre chose qu'un chiffre on l'efface
         const handleInput = (event)=>{
@@ -69,6 +71,22 @@ function Entrainement(){
         // const handleSwitchChange = () => {
         //     setTeamsOfThreePlayers(!teamsOfThreePlayers); // Inverse la valeur actuelle du switch
         // };
+        const handleScroll = () => {
+            const offset = window.scrollY;
+            const formTop = document.getElementById('scroll-form').offsetTop;
+            if (offset > formTop) {
+                setSticky(true);
+            } else {
+                setSticky(false);
+            }
+        };
+    
+        useEffect(() => {
+            window.addEventListener('scroll', handleScroll);
+            return () => {
+                window.removeEventListener('scroll', handleScroll);
+            };
+        }, []);
 
         useEffect(()=>{
             const getPlayer = async ()=>{
@@ -86,7 +104,7 @@ function Entrainement(){
                             localStorage.setItem('players', JSON.stringify(players))
                             setNumberPlayer("");
                             setErreur("");
-                            setSuccess('Joueur ajoutée.')
+                            setSuccess(` ${response.data[0].numero} ${response.data[0].nom} ${response.data[0].prenom} ajouté.`)
                         }else{
                             setSuccess("");
                             setErreur("Joueurs déjà présent.")
@@ -108,7 +126,7 @@ function Entrainement(){
 
     return (
         <Container>
-            <Row className="mb-3">
+            <Row className={`mb-3 form-container ${isSticky ? 'sticky' : ''}`} id="scroll-form">
                 <Form onSubmit={handleSubmit}>
                     <InputGroup className="mb-3">
                         <Form.Control
@@ -151,10 +169,12 @@ function Entrainement(){
                 </Col>
             </Row> */}
             <Row className="mb-3">
-                {/* <Link to={`/tirage/${teamsOfThreePlayers}`}> */}
-                <Link to={`/tirage`}>
-                    <Button variant="warning">Aller au tirage des équipes</Button>
-                </Link>
+                <Col>
+                    {/* <Link to={`/tirage/${teamsOfThreePlayers}`}> */}
+                    <Link to={`/tirage`}>
+                        <Button variant="warning">Aller au tirage des équipes</Button>
+                    </Link>
+                </Col>
             </Row>
             <Row>
                 <Col>
