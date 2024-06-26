@@ -2,6 +2,7 @@ import { useState, useEffect} from "react";
 import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import MatchCardList from "../component/MatchCardList";
+import BtnTirageConcours from "../component/BtnTirageConcours";
 
 function Tirage(){
     // const { numberPlayerTeam } = useParams();
@@ -319,20 +320,25 @@ function Tirage(){
                     </Row>
                     </>
                 ):(
-                    <>
+                    <Row>
                     {tryTocreated && teamsFinish.length === 0  && matchs.length === 0? (
-                        <>
-                        <h1 className="mb-3 text-danger">Les équipes n'ont pas pu être faites. Veuillez réinitialiser la liste des joueurs.  </h1>
-                        <p>Les joueurs ont déjà joué ensemble.</p>
-                        </>
+                        <Co>
+                            <h1 className="mb-3 text-danger">Les équipes n'ont pas pu être faites. Veuillez réinitialiser la liste des joueurs.  </h1>
+                            <p>Les joueurs ont déjà joué ensemble.</p>
+                        </Co>
                     ):(
-                        <>
-                        <h1 className="mb-3">Vous n'avez pas encore lancer le tirage.</h1>
-                        <Button variant="warning" size="lg" onClick={createTeams}>Lancer le tirage</Button>
-                        <p className="mb-3 text-danger">{error} </p>
-                        </>
+                        <Col>
+                        <Row>
+                            <Col>
+                            <h1 className="mb-3">Vous n'avez pas encore lancer de tirage.</h1>
+                            <p className="mb-3 text-danger">{error} </p>
+                            <Button className="m-3 mx-5" variant="primary" size="lg" onClick={createTeams}>Tirage d'entraînement</Button>
+                            </Col>
+                        </Row>
+                            <BtnTirageConcours createTeams={createTeams} nbrDraw={nbrDraw}/>
+                        </Col>
                     )}
-                    </>
+                    </Row>
                 )
                 }
                 </>
