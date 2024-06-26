@@ -1,6 +1,7 @@
 import { useState, useEffect} from "react";
 import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import MatchCardList from "../component/MatchCardList";
 
 function Tirage(){
     // const { numberPlayerTeam } = useParams();
@@ -75,13 +76,6 @@ function Tirage(){
                 if(!addedToTeam){
                     setPlayersAlone([...playersAlone, player]);
                 }
-                // On  parcours les équipe pour trouver une équipe valide
-                    // const indexRandom = Math.floor(Math.random()*teams.length);
-                    // const randomTeam = teams[indexRandom];
-                    //  // si il ne peut pas on relance pour trouver une autre équipe. 
-                    // }else {
-                    //     selectRandomPlayer(player);
-                    // }
             }else if(teams.length>0 && teams.some(team => team.length === teamSize)){
                 // si pas de joueurs possible restant, on parcours les équipes à la recherche d'un joueurs possible
                 for(const team of teams) {
@@ -290,7 +284,6 @@ function Tirage(){
     localStorage.setItem('nbrDraw', JSON.stringify(nbrDraw));
     },[players, matchs, teamsFinish ,nbrDraw])
     return(
-        <>
             <Container>
                 {contraintsError ? (
                     <h1 className="mb-3 text-danger">{contraintsError} </h1>
@@ -314,30 +307,7 @@ function Tirage(){
                     <>
                     <Row className="justify-content-center mb-3">
                     <h1 className="mb-3">Tirage n°{nbrDraw} : </h1>
-                    {
-                        matchs.map((match,index)=>(
-                            <Col md={5} className="mb-3 d-flex justify-content-center" key={index}>
-                            <Card  border="primary" className="w-50 p-0">
-                                <Card.Header className="bg-primary fw-bold text-light">Equipe n°{match.team1 +1}</Card.Header>
-                                <ListGroup variant="">
-                                    {teamsFinish[match.team1].map((player,idx)=>(
-                                        <ListGroup.Item key={idx}>{player.nom} {player.prenom}</ListGroup.Item>
-                                    ))}
-                                </ListGroup>
-                            </Card>
-                                <div className="d-flex align-items-center justify content center mx-2">
-                                    <h2 className="fw-bold fst-italic">Vs</h2>
-                                </div>
-                            <Card  border="primary" className="w-50 p-0">
-                                <Card.Header className="bg-primary fw-bold text-light">Equipe n°{match.team2 +1}</Card.Header>
-                                <ListGroup variant="">
-                                    {teamsFinish[match.team2].map((player,idx)=>(
-                                        <ListGroup.Item key={idx}>{player.nom} {player.prenom}</ListGroup.Item>
-                                        ))}
-                                </ListGroup>
-                            </Card>
-                            </Col>
-                    ))}
+                    <MatchCardList matchs={matchs} teamsFinish={teamsFinish}/>
                     </Row>
                     <Row>
                         <Col>
@@ -368,7 +338,6 @@ function Tirage(){
                 </>
                 )}
             </Container>
-        </>
     )
 
 }

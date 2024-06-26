@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Col, Container, Form, InputGroup, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import BtnPage from "../../component/BtnPage";
+import SearchBarMember from "../../component/SearchBarMember";
 
 function ListeMembres(){
     const [members, setMembers]= useState([]);
@@ -24,15 +25,6 @@ function ListeMembres(){
         'content-type': 'application/json',
         Authorization: `Bearer ${token}`,
     };
-
-    const handleSubmit=(event)=>{
-        event.preventDefault();
-        // pas necessaire si la recherche se fais dans le useffect 
-    }
-    const handleChange=(event)=>{
-        const results = event.target.value.replace( /[^a-zA-ZÀ-ÖØ-öø-ÿ0-9'-]/g, '');
-        setSearchValue(results);
-    }
 
     const handleDelete=async (member)=>{
         const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer ce membre ?");
@@ -117,25 +109,7 @@ return(
                     <h1 className="mb-3">Liste des membres :</h1>
                 </Row>
                 <Row className="mb-3">
-                    <Col>
-                        <Form onSubmit={handleSubmit}>
-                            <InputGroup className="mb-3">
-                                <Form.Control
-                                placeholder="Recherche par nom ou numéro ..."
-                                aria-label="recherche joueur"
-                                aria-describedby="namePlayer"
-                                required
-                                onChange={handleChange}
-                                value={searchValue}
-                                />
-                                <Button variant="outline-primary" id="button-namePlayer" type="submit">
-                                    Rechercher
-                                </Button>
-                            </InputGroup>
-                        </Form>
-                    <span style={{color:'green'}}>{success}</span>
-                    <span style={{color:'red'}}>{erreur}</span>
-                    </Col>
+                    <SearchBarMember searchValue={searchValue} setSearchValue={setSearchValue} erreur={erreur} success={success} />
                     <Col>
                     <Link to="/admin/ajoutJoueur">
                         <Button variant="warning">Ajouter un nouveau membre</Button>

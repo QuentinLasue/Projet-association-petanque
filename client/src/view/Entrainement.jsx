@@ -2,10 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Container, Form, InputGroup, Row, Table, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import FormNumberPlayer from "../component/FromNumberPlayer";
 
 function Entrainement(){
-    // variable de l'input pour empécher de rentrer autres chose que des nombres
-    const[inputValue, setInputValue] = useState('');
     const[numberPlayer, setNumberPlayer] = useState('');
     // variable ou l'on stock les joueurs de la partie
     const[players, setPlayers] = useState(JSON.parse(localStorage.getItem('players')) || []);
@@ -14,27 +13,7 @@ function Entrainement(){
     // variable pour affichage d'un message d'erreur et de succes
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
-    const [isSticky, setSticky] = useState(false);
 
-
-        // pour gérer si on entre autre chose qu'un chiffre on l'efface
-        const handleInput = (event)=>{
-            const results = event.target.value.replace(/\D/g,'');
-            setInputValue(results);
-        }
-        
-        const handleSubmit = (event)=>{
-            // empéche le rechargement de la page
-            event.preventDefault()
-            if(!isNaN(inputValue) && inputValue!== ''){
-                setNumberPlayer(inputValue);
-                setInputValue('');
-                setErreur('');
-            }else {
-                setErreur("La valeur rentré n'est pas un numéro.");
-                setSuccess('');
-            }
-        }
         const handleDelete = (numero)=>{
             // demande de confirmation de suppression
             const confirmation = window.confirm("Êtes-vous sûr de vouloir retirer ce joueur ?");
@@ -65,27 +44,9 @@ function Entrainement(){
                 setSuccess("");
             }
         }
-        
         // const handleSwitchChange = () => {
         //     setTeamsOfThreePlayers(!teamsOfThreePlayers); // Inverse la valeur actuelle du switch
         // };
-        const handleScroll = () => {
-            const offset = window.scrollY;
-            const formTop = document.getElementById('scroll-form').offsetTop;
-            if (offset > formTop) {
-                setSticky(true);
-            } else {
-                setSticky(false);
-            }
-        };
-    
-        useEffect(() => {
-            window.addEventListener('scroll', handleScroll);
-            return () => {
-                window.removeEventListener('scroll', handleScroll);
-            };
-        }, []);
-
         useEffect(()=>{
             const getPlayer = async ()=>{
                 if(numberPlayer !== ""){
@@ -124,27 +85,7 @@ function Entrainement(){
 
     return (
         <Container>
-            <Row className={`mb-3 form-container ${isSticky ? 'sticky' : ''}`} id="scroll-form">
-                <Form onSubmit={handleSubmit}>
-                    <InputGroup className="mb-3">
-                        <Form.Control
-                        placeholder="Numéro du joueur"
-                        aria-label="Numéro du joueur"
-                        aria-describedby="numberPlayer"
-                        pattern="[0-9]*"
-                        value={inputValue}
-                        onChange={handleInput}
-                        onSubmit={handleSubmit}
-                        required
-                        />
-                        <Button variant="outline-primary" id="button-numberPlayer" type="submit">
-                            Ajouter
-                        </Button>
-                    </InputGroup>
-                </Form>
-                <span style={{color:'red'}}>{erreur}</span>
-                <span style={{color:'green'}}>{success}</span>
-            </Row>
+            <FormNumberPlayer setNumberPlayer={setNumberPlayer} erreur={erreur} setErreur={setErreur} success={success}  setSuccess={setSuccess}  />
             <Row className="mb-5">
                 <Col>
                     <h3>Nombre(s) de joueur(s) : {players.length}</h3>
