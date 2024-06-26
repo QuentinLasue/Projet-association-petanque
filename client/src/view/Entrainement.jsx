@@ -44,8 +44,6 @@ function Entrainement(){
                 const updatePlayers = players.filter((player)=> player.numero !== numero);
                 setPlayers(updatePlayers);
                 setErreur('');
-                // localStorage.setItem('matchs', JSON.stringify([]));
-                // localStorage.setItem('teams', JSON.stringify([]));
                 setSuccess("Le joueur à été retiré.");
             }else{
                 setErreur("");
