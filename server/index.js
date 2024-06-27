@@ -32,6 +32,8 @@ const users = require("./routes/users");
 app.use("/users", users);
 const login = require("./routes/login");
 app.use("/login", login);
+const concours = require("./routes/competition");
+app.use("/competition", concours);
 
 // Middleware pour les routes non trouvées (404)
 app.use((req, res, next) => {

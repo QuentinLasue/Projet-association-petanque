@@ -2,10 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { Button, Row, Col } from "react-bootstrap"
 import { AuthContext } from "../Auth/AuthContext";
 import { AppContext } from "../appContext/AppContext";
+import axios from "axios";
 
 function BtnTirageConcours({createTeams}){
     const {isLogged} = useContext(AuthContext);
-    const {competition, setCompetition, nbrDraw} = useContext(AppContext);
+    const {setCompetition, nbrDraw, setNumberCompetition} = useContext(AppContext);
     // Récupération du token dans le local storage sui il existe
     const token = localStorage.getItem('accessToken');
     // Configuration du headers pour inclure le token JWT
@@ -13,23 +14,33 @@ function BtnTirageConcours({createTeams}){
         'content-type': 'application/json',
         Authorization: `Bearer ${token}`,
     };
-    const createConcours=(type)=>{
+    const createCompetition = async (type)=>{
+        try {
+            const response = await axios.post(`http://localhost:5000/competition/addCompetition`, {
+                type: type,
+            },
+        { headers }
+    );
+        setNumberCompetition(response.data.competitionId)
+        } catch (error) {
+            console.log("Erreur création concours: ", error);
+        }
+    }
+    const launchConcours=(type)=>{
         setCompetition(true);
-
-        // créer un concours en base de donné avec la date du jours et le type de concours si il n'y en a pas 
+        // création du concours en BDD
+        createCompetition(type);
         // dans tirage ne pas oublier de faire vérification si un concours existe avec de créer de nouvelle équipes et d'enregistrer le tirage si c'est le cas 
-        
-
         // Création des équipes 
-        // createTeams();
+        createTeams();
     }
     return(
         <>
             {isLogged() && nbrDraw===0 ? (
             <Row>
                 <Col>
-                    <Button className="m-3 mx-5" variant="warning" size="lg" onClick={()=>createConcours(1)}>Tirage concours interne</Button>
-                    <Button className="m-3 mx-5" variant="warning" size="lg" onClick={()=>createConcours(2)}>Tirage concours 2€</Button>
+                    <Button className="m-3 mx-5" variant="warning" size="lg" onClick={()=>launchConcours(1)}>Tirage concours interne</Button>
+                    <Button className="m-3 mx-5" variant="warning" size="lg" onClick={()=>launchConcours(2)}>Tirage concours 2€</Button>
                 </Col>
             </Row>
             ):("")}

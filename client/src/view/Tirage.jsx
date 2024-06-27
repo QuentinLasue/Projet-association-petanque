@@ -7,7 +7,7 @@ import { AppContext } from "../appContext/AppContext";
 
 function Tirage(){
     const teamSize = 2;
-    const{ players, setPlayers, teamsFinish, setTeamsFinish, matchs, setMatchs, nbrDraw, setNbrDraw} = useContext(AppContext);
+    const{ players, setPlayers, teamsFinish, setTeamsFinish, matchs, setMatchs, nbrDraw, setNbrDraw, setDrawCompetition, drawCompetition, setCompetition, competition, numberCompetition,setNumberCompetition} = useContext(AppContext);
     let teams = [];
     let currentTeam = [];
     let newMatch=[];
@@ -110,7 +110,7 @@ function Tirage(){
             }
         }
     };
-
+    
     const teamBalancing = ()=>{
         // Sélectionne une équipe à redistribuer
         const teamToRedistribute = teams.find(team=> team.length === 2);
@@ -161,6 +161,9 @@ function Tirage(){
             drawMatchs(teamOf2);
     
             setMatchs(newMatch);
+            if(competition){
+                setDrawCompetition([...drawCompetition, newMatch]);
+            }
         }
     }
     const drawMatchs = (teams)=>{
@@ -174,8 +177,8 @@ function Tirage(){
                 const team2 = teamsArray[Math.floor(Math.random()* teamsArray.length)];
                 remainingTeams.delete(team2);
                 newMatch.push({
-                    team1: teamsFinish.indexOf(team),
-                    team2: teamsFinish.indexOf(team2),
+                    team1: team,
+                    team2: team2,
                 });
             }
         }
@@ -230,6 +233,7 @@ function Tirage(){
                 teamBalancing();
             }
             setTeamsFinish(teams);
+            
         }else{
             setError("Il faut 8 joueurs minimum pour former des équipes valident pour les 4 parties.")
         }
@@ -257,6 +261,17 @@ function Tirage(){
                     removeTeammatesList(team[2],team[0].numero);
                     removeTeammatesList(team[2],team[1].numero);
                 }
+            }
+            //  on supprime le concours lancé si il n'a eu que le tirage qu'on a annulé
+            if(nbrDraw - 1 === 0  && competition){
+                setCompetition(false)
+                setDrawCompetition(false);
+                // supprimer le concours lancé avec requéte avec l'id qu'on arécupérer
+                setNumberCompetition(false)
+                // si eu plusieur tirage ont annule juste le précédent
+            }else if (nbrDraw - 1 > 0 && competition){
+                // on enléve le tirage enregistrer
+                setDrawCompetition(drawCompetition.slice(0,-1))
             }
             // on réinitialise les équipes, les matchs, et on retire un aux nombre de tirage effectué
             setNbrDraw(nbrDraw-1);
@@ -319,7 +334,7 @@ function Tirage(){
                             <Col>
                             <h1 className="mb-3">Vous n'avez pas encore lancer de tirage.</h1>
                             <p className="mb-3 text-danger">{error} </p>
-                            <Button className="m-3 mx-5" variant="primary" size="lg" onClick={createTeams}>Tirage d'entraînement</Button>
+                            <Button className="m-3 mx-5" variant="primary" size="lg" onClick={createTeams}>{competition ? "Lancer le tirage ":"Tirage d'entraînement" }</Button>
                             </Col>
                         </Row>
                             <BtnTirageConcours createTeams={createTeams}/>

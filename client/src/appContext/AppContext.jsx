@@ -33,6 +33,11 @@ const AppProvider = ({children}) => {
         const savedDrawCompetition = localStorage.getItem('drawCompetition');
         return savedDrawCompetition ? JSON.parse(savedDrawCompetition) : [];
     });
+    // Pour enregistrer le numéro de la compétition en cours
+    const [numberCompetition, setNumberCompetition] = useState(()=>{
+        const savedNumberCompetition = localStorage.getItem('competitionNumber');
+        return savedNumberCompetition ? JSON.parse(savedNumberCompetition): false;
+    });
     // mise a jours du localStorage si changement des valeurs
     useEffect(()=>{
         localStorage.setItem('players',JSON.stringify(players));
@@ -41,7 +46,8 @@ const AppProvider = ({children}) => {
         localStorage.setItem('nbrDraw',JSON.stringify(nbrDraw));
         localStorage.setItem('drawCompetition',JSON.stringify(drawCompetition));
         localStorage.setItem('competition',JSON.stringify(competition));
-    },[players, teamsFinish, matchs, nbrDraw, drawCompetition, competition])
+        localStorage.setItem('competitionNumber',JSON.stringify(numberCompetition));
+    },[players, teamsFinish, matchs, nbrDraw, drawCompetition, competition, numberCompetition])
 
     const value = {
         teamsFinish,
@@ -55,7 +61,9 @@ const AppProvider = ({children}) => {
         drawCompetition, 
         setDrawCompetition, 
         competition, 
-        setCompetition
+        setCompetition,
+        numberCompetition,
+        setNumberCompetition,
     }
     return (
         <AppContext.Provider value={value}>

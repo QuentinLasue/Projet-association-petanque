@@ -7,7 +7,7 @@ import { AppContext } from "../appContext/AppContext";
 function Entrainement(){
     const[numberPlayer, setNumberPlayer] = useState('');
     // variable ou l'on stock les joueurs de la partie
-    const{players, setPlayers, setMatchs, setNbrDraw, setTeamsFinish, setDrawCompetition} = useContext(AppContext);
+    const{players, setPlayers, setMatchs, setNbrDraw, setTeamsFinish, setDrawCompetition, setNumberCompetition, setCompetition} = useContext(AppContext);
     // variable pour affichage d'un message d'erreur et de succes
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
@@ -29,13 +29,15 @@ function Entrainement(){
         }
         const handleDeleteAll = ()=>{
             const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer toutes la liste de joueurs ?");
-
+            // on reset tout a leurs valeurs par default
             if(confirmation){
                 setPlayers([]);
                 setMatchs([]);
                 setNbrDraw(0);
                 setTeamsFinish([]);
                 setDrawCompetition([]);
+                setCompetition(false);
+                setNumberCompetition(false)
                 setErreur("");
                 setSuccess("Liste effacée.");
             }else{
