@@ -322,7 +322,7 @@ function Tirage(){
                             <Button className="m-3 mx-5" variant="primary" size="lg" onClick={createTeams}>Tirage d'entraînement</Button>
                             </Col>
                         </Row>
-                            <BtnTirageConcours createTeams={createTeams} nbrDraw={nbrDraw}/>
+                            <BtnTirageConcours createTeams={createTeams}/>
                         </Col>
                     )}
                     </Row>

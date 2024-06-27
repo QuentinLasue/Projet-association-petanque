@@ -1,8 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
+import { AuthContext } from "../../Auth/AuthContext";
 
 function AddUser(){
+    const {getHeaders}= useContext(AuthContext);
+    const headers = getHeaders();
     const [error, setError]= useState('');
     const [success, setSuccess]= useState('');
     const [newUser, setNewUser] = useState({
@@ -10,13 +13,7 @@ function AddUser(){
         password:'',
         confirmPassword:''
     });
-    // Récupération du token dans le local storage sui il existe
-    const token = localStorage.getItem('accessToken');
-    // Configuration du headers pour inclure le token JWT
-    const headers = {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-    };
+   
 
     const handleChange=(event)=>{
         setNewUser({

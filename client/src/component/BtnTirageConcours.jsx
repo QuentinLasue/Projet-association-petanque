@@ -1,13 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import { Button, Row, Col } from "react-bootstrap"
 import { AuthContext } from "../Auth/AuthContext";
+import { AppContext } from "../appContext/AppContext";
 
-function BtnTirageConcours({createTeams, nbrDraw}){
+function BtnTirageConcours({createTeams}){
     const {isLogged} = useContext(AuthContext);
-
-    // modification : utilisation du context plutot que du local storage pour stocker les équipes, les matchs et le nbr de tirage (voir chat GPT pour explication)
+    const {competition, setCompetition, nbrDraw} = useContext(AppContext);
+    // Récupération du token dans le local storage sui il existe
+    const token = localStorage.getItem('accessToken');
+    // Configuration du headers pour inclure le token JWT
+    const headers = {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+    };
     const createConcours=(type)=>{
-        // selection du type de concours 2€ ou interne
+        setCompetition(true);
+
         // créer un concours en base de donné avec la date du jours et le type de concours si il n'y en a pas 
         // dans tirage ne pas oublier de faire vérification si un concours existe avec de créer de nouvelle équipes.
 

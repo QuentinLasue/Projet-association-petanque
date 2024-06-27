@@ -1,11 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Col, Container, Form, InputGroup, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import BtnPage from "../../component/BtnPage";
 import SearchBarMember from "../../component/SearchBarMember";
+import { AuthContext } from "../../Auth/AuthContext";
 
 function ListeMembres(){
+    const {getHeaders}=useContext(AuthContext);
+    const headers = getHeaders();
     const [members, setMembers]= useState([]);
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
@@ -18,13 +21,8 @@ function ListeMembres(){
     const indexFirstMember = indexLastMember - memberPerPage;
     const membersDisplay = Array.isArray(members) ? members.slice(indexFirstMember, indexLastMember) : members;
     const nbrPage = members.length / memberPerPage;
-    // Récupération du token dans le local storage sui il existe
+    // Récupération du token dans le local storage si il existe
     const token = localStorage.getItem('accessToken');
-    // Configuration du headers pour inclure le token JWT
-    const headers = {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-    };
 
     const handleDelete=async (member)=>{
         const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer ce membre ?");
