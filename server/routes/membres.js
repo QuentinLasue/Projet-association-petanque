@@ -1,27 +1,11 @@
 // on appelle la library express
 const express = require("express");
-// on appelle la librairy mysql
-const mysql = require("mysql");
 // Création d'un router,
 const router = express.Router();
 //import du middleware de vérification du token pour les routes protégé
 const verifyToken = require("../middlewares/authMiddleware");
+const connection = require("../database/connection");
 
-//Connexion à la database
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "petanque",
-});
-//on se connecte
-connection.connect((error) => {
-  if (error) {
-    console.error("Connection error : " + error.stack);
-    return;
-  }
-  console.log("Connection success !");
-});
 // Pour afficher tous les membres
 // request ce que l'on reçois, response ce que l'on envoi
 // get car on veut afficher, / pour racine de /membres

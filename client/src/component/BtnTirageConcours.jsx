@@ -17,7 +17,8 @@ function BtnTirageConcours({createTeams}){
         setCompetition(true);
 
         // créer un concours en base de donné avec la date du jours et le type de concours si il n'y en a pas 
-        // dans tirage ne pas oublier de faire vérification si un concours existe avec de créer de nouvelle équipes.
+        // dans tirage ne pas oublier de faire vérification si un concours existe avec de créer de nouvelle équipes et d'enregistrer le tirage si c'est le cas 
+        
 
         // Création des équipes 
         // createTeams();

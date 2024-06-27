@@ -9,16 +9,16 @@ const port = 5000;
 const app = express();
 // configuration des options CORS
 const corsOptions = {
-  origin: 'http://localhost:5173',// origine de notre front
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'], // Ajoutez les en-têtes nécessaires ici
+  origin: "http://localhost:5173", // origine de notre front
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"], // Ajoutez les en-têtes nécessaires ici
 };
 // Utilisation de CORS avec les options spécifié
 app.use(cors(corsOptions));
 app.use(bodyParser.json()); //Middleware pour parser le JSON necessaire pour requéte POST
 app.get("/", (request, response) => {
   response.send("Bienvenue sur notre API du club de pétanque !");
-  });
+});
 //   // On renvoi l'en tête Access-Control-Allow-Origin, en acceptant toutes les origines (possibilité de mettre http://localhost:5173)
 //   app.use((request, response, next) => {
 //     //Middleware
@@ -30,7 +30,7 @@ const membres = require("./routes/membres");
 app.use("/membres", membres);
 const users = require("./routes/users");
 app.use("/users", users);
-const login = require("./routes/login")
+const login = require("./routes/login");
 app.use("/login", login);
 
 // Middleware pour les routes non trouvées (404)

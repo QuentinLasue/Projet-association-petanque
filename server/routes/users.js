@@ -1,29 +1,11 @@
 // on appelle la librairy express
 const express = require("express");
-// on appelle la librairy mysql
-const mysql = require("mysql");
 // création d'un router
 const router = express.Router();
 // pour le hashage du mdp
 const bcrypt = require("bcrypt");
 const verifyToken = require("../middlewares/authMiddleware");
-
-// Connexion a la base de donnée
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "petanque",
-});
-
-// on se connecte
-connection.connect((error) => {
-  if (error) {
-    console.error("Connection error : " + error.stack);
-    return;
-  }
-  console.log("Connection success !");
-});
+const connection = require("../database/connection");
 
 // pour afficher les  users
 router.get("/", (request, response) => {
