@@ -4,13 +4,8 @@ import { AuthContext } from "../Auth/AuthContext";
 
 function BtnTirageConcours({createTeams, nbrDraw}){
     const {isLogged} = useContext(AuthContext);
-    const [loggedIn,setLoggedIn]= useState(isLogged());
-    // const [nbrDraw, setNbrDraw]= useState(JSON.parse(localStorage.getItem('nbrDraw')) || 0)
 
-    useEffect(() => {
-      setLoggedIn(isLogged());
-    }, [isLogged]);
-
+    // modification : utilisation du context plutot que du local storage pour stocker les équipes, les matchs et le nbr de tirage (voir chat GPT pour explication)
     const createConcours=(type)=>{
         // selection du type de concours 2€ ou interne
         // créer un concours en base de donné avec la date du jours et le type de concours si il n'y en a pas 
@@ -21,7 +16,7 @@ function BtnTirageConcours({createTeams, nbrDraw}){
     }
     return(
         <>
-            {loggedIn && nbrDraw===0 ? (
+            {isLogged() && nbrDraw===0 ? (
             <Row>
                 <Col>
                     <Button className="m-3 mx-5" variant="warning" size="lg" onClick={()=>createConcours(1)}>Tirage concours interne</Button>

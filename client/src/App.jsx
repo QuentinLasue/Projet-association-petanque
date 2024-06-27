@@ -11,12 +11,14 @@ import AdminRouter from './view/admin/AdminRouter';
 import { AuthProvider } from './Auth/AuthContext';
 import Footer from './component/Footer';
 import { Container } from 'react-bootstrap';
+import { AppProvider } from './appContext/AppContext';
 
 function App() {
 
   return (
     <>
     <AuthProvider>
+      <AppProvider>
       <BrowserRouter>
         <div className='app-container'>
           <NavBar/>
@@ -32,12 +34,12 @@ function App() {
                 </AuthGuard>
               }></Route>
               <Route path="*" element={<Error/>}></Route> 
-              {/* <Route path="/tirage/:numberPlayerTeam" element={<Tirage/>}></Route> */}
             </Routes>
           </Container>
           <Footer/>
         </div>
       </BrowserRouter>
+      </AppProvider>
     </AuthProvider>
     </>
   )

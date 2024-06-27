@@ -1,6 +1,6 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Col, Image, Row, Container, Button } from 'react-bootstrap';
+import { Image, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import BtnConnexion from './BtnConnexion';
 import { useContext, useEffect, useState } from 'react';

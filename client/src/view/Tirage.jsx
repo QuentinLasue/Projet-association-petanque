@@ -1,21 +1,17 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect, useContext} from "react";
 import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import MatchCardList from "../component/MatchCardList";
 import BtnTirageConcours from "../component/BtnTirageConcours";
+import { AppContext } from "../appContext/AppContext";
 
 function Tirage(){
-    // const { numberPlayerTeam } = useParams();
-    // taille des équipe en fonction de la valeur reçu
-    // const teamSize = numberPlayerTeam === "true" ? 3:2;
     const teamSize = 2;
-    const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('players'))||[]);
-    const [teamsFinish, setTeamsFinish] = useState(JSON.parse(localStorage.getItem('teams')) || []);
+    const{ players, setPlayers, teamsFinish, setTeamsFinish, matchs, setMatchs, nbrDraw, setNbrDraw} = useContext(AppContext);
     let teams = [];
-    const [tryTocreated, setTryTocreated] = useState(false)
-    // stock la liste des matchs
-    const [matchs, setMatchs]= useState(JSON.parse(localStorage.getItem('matchs')) || []);
+    let currentTeam = [];
     let newMatch=[];
+    const [tryTocreated, setTryTocreated] = useState(false)
     // Pour stocker les joueurs qui ne peuvent être avec personne
     const [playersAlone, setPlayersAlone] = useState([]);
     // Pour stocker les joueurs non-attribuer a une équipes pour éviter les doublons
@@ -23,11 +19,8 @@ function Tirage(){
     // Pour afficher un msg d'erreur si les équipes ne peuvent pu être créer a cause des contraintes
     const [contraintsError, setConstraintsError]= useState("");
     const[error, setError]=useState("");
-    let currentTeam = [];
     // protection boucle trop grande 
     let permutationLimit = 50;
-    // Pour ne pas tirer plus de partie que l'entrainement demande
-    const [nbrDraw, setNbrDraw]= useState(JSON.parse(localStorage.getItem('nbrDraw')) || 0)
     let navigate = useNavigate();
 
     // mélange de Knuth
@@ -278,12 +271,6 @@ function Tirage(){
         }
    },[teamsFinish]) // à exécuter à la mise a jours de teamsfinish
 
-   useEffect(()=>{
-    localStorage.setItem('players', JSON.stringify(players));
-    localStorage.setItem('matchs', JSON.stringify(matchs));
-    localStorage.setItem('teams', JSON.stringify(teamsFinish));
-    localStorage.setItem('nbrDraw', JSON.stringify(nbrDraw));
-    },[players, matchs, teamsFinish ,nbrDraw])
     return(
             <Container>
                 {contraintsError ? (

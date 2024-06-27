@@ -1,15 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Button, Container, Form, InputGroup, Row, Table, Col } from "react-bootstrap";
+import { useEffect, useState, useContext } from "react";
+import { Button, Container, Row, Table, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormNumberPlayer from "../component/FromNumberPlayer";
-
+import { AppContext } from "../appContext/AppContext";
 function Entrainement(){
     const[numberPlayer, setNumberPlayer] = useState('');
     // variable ou l'on stock les joueurs de la partie
-    const[players, setPlayers] = useState(JSON.parse(localStorage.getItem('players')) || []);
-    // variable si l'on veut des équipes de 3 joueurs
-    // const[teamsOfThreePlayers,setTeamsOfThreePlayers] = useState(false)
+    const{players, setPlayers, setMatchs, setNbrDraw, setTeamsFinish, setDrawCompetition} = useContext(AppContext);
     // variable pour affichage d'un message d'erreur et de succes
     const [success, setSuccess] = useState('');
     const [erreur, setErreur] = useState('');
@@ -34,9 +32,10 @@ function Entrainement(){
 
             if(confirmation){
                 setPlayers([]);
-                localStorage.setItem('matchs', JSON.stringify([]));
-                localStorage.setItem('teams', JSON.stringify([]));
-                localStorage.setItem('nbrDraw',JSON.stringify(0));
+                setMatchs([]);
+                setNbrDraw(0);
+                setTeamsFinish([]);
+                setDrawCompetition([]);
                 setErreur("");
                 setSuccess("Liste effacée.");
             }else{
@@ -44,9 +43,6 @@ function Entrainement(){
                 setSuccess("");
             }
         }
-        // const handleSwitchChange = () => {
-        //     setTeamsOfThreePlayers(!teamsOfThreePlayers); // Inverse la valeur actuelle du switch
-        // };
         useEffect(()=>{
             const getPlayer = async ()=>{
                 if(numberPlayer !== ""){
@@ -78,11 +74,6 @@ function Entrainement(){
             getPlayer();
         },[numberPlayer])
 
-        useEffect(()=>{
-            localStorage.setItem('players', JSON.stringify(players))
-
-        },[players])
-
     return (
         <Container>
             <FormNumberPlayer setNumberPlayer={setNumberPlayer} erreur={erreur} setErreur={setErreur} success={success}  setSuccess={setSuccess}  />
@@ -94,22 +85,8 @@ function Entrainement(){
                     <Button variant="danger" onClick={handleDeleteAll}>Supprimer tous les joueurs</Button>
                 </Col>
             </Row>
-            {/* <Row className="mb-3">
-                <Col className="d-flex justify-content-center">
-                    <Form>
-                        <Form.Check 
-                        type="switch" 
-                        label="Activer les équipe de trois joueurs" 
-                        id="threePlayers"
-                        checked={teamsOfThreePlayers}
-                        onChange={handleSwitchChange}
-                        />
-                    </Form>
-                </Col>
-            </Row> */}
             <Row className="mb-3">
                 <Col>
-                    {/* <Link to={`/tirage/${teamsOfThreePlayers}`}> */}
                     <Link to={`/tirage`}>
                         <Button variant="warning">Aller au tirage des équipes</Button>
                     </Link>
