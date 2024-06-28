@@ -28,7 +28,7 @@ function Entrainement(){
             }
         }
         const handleDeleteAll = ()=>{
-            const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer toutes la liste de joueurs ?");
+            const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer toutes la liste de joueurs ? Si vous n'avez pas fini de saisir les résultats d'un concours cela les effaceras.");
             // on reset tout a leurs valeurs par default
             if(confirmation){
                 setPlayers([]);

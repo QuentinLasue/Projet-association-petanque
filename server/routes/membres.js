@@ -170,32 +170,57 @@ router.post("/updateMember", verifyToken, (request, response) => {
 });
 // Pour supprimer un membre
 router.delete("/delete", verifyToken, (request, response) => {
-  const { name, firstName, number } = request.body;
-  try {
+  const { id_membre } = request.body;
+
+  connection.beginTransaction((error) => {
+    if (error) {
+      return response.status(500).json({ error: "Transaction échoué." });
+    }
+    // supression des occurences dans la table participe
     connection.query(
-      "DELETE FROM membre WHERE numero = ? AND nom = ? AND prenom = ?",
-      [number, name, firstName],
+      "DELETE FROM participe WHERE id_membre = ?",
+      [id_membre],
+      (error, result) => {
+        if (error) {
+          return connection.rollback(() => {
+            console.log(
+              "Erreur lors de la suppression des participations aux concours : ",
+              error
+            );
+            response.status(500).json({ error: "suppression échoué." });
+          });
+        }
+      }
+    );
+    // suppression du membre
+    connection.query(
+      "DELETE FROM membre WHERE id_membre = ? ",
+      [id_membre],
       (error, result) => {
         if (error) {
           console.log("Erreur lors de la suppression du membre : ", error);
           response.status(500).json({
-            error:
-              "Erreur interne du serveur lors de la suppression du membre.",
+            error: "Erreur lors de la suppression du membre.",
           });
-        } else {
-          response
-            .status(201)
-            .json({ message: "Membre supprimé avec succès." });
         }
       }
     );
-  } catch (error) {
-    console.log("Erreur lors de la suppression du membre : ", error);
-    response.status(500).json({
-      error: "Erreur interne du serveur lors de la suppression du membre.",
+    // validation de la transaction
+    connection.commit((error) => {
+      if (error) {
+        return connection.rollback(() => {
+          response.status(500).json({ error: "Transaction commit échoué." });
+        });
+      }
+      response
+        .status(201)
+        .json({
+          message: "Suppression du membre et de ses participations réussi.",
+        });
     });
-  }
+  });
 });
+
 // Pour la recherche dans la liste des membres
 router.get("/search/liste", verifyToken, (request, response) => {
   const { searchValue } = request.query; // ou request.query pour get

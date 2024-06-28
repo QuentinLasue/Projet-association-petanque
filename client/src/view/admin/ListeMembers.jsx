@@ -30,9 +30,7 @@ function ListeMembres(){
         if(confirmation){
             try {
                 const response = await axios.delete("http://localhost:5000/membres/delete",{headers, data: {
-                    number:member.numero,
-                    name: member.nom,
-                    firstName: member.prenom,
+                    id_membre: member.id_membre,
                     }
                 }
                 );

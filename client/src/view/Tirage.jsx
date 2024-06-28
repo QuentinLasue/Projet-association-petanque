@@ -164,6 +164,8 @@ function Tirage(){
             if(competition){
                 // si compétition, on enregistre les tirages
                 setDrawCompetition([...drawCompetition, newMatch]);
+                // ici pour le premier tirage ils se fais dans le useEffect de AppContext, pour les autres ette ligne se lancerascar numberCompetition se seras mis a jours a temps.
+                numberCompetition >=1 && addAllParticipations()
             }
         }
     }
