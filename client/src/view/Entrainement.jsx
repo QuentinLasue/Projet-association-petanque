@@ -37,7 +37,7 @@ function Entrainement(){
                 setTeamsFinish([]);
                 setDrawCompetition([]);
                 setCompetition(false);
-                setNumberCompetition(false)
+                setNumberCompetition(0)
                 setErreur("");
                 setSuccess("Liste effacée.");
             }else{

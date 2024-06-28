@@ -7,7 +7,7 @@ import { AppContext } from "../appContext/AppContext";
 
 function Tirage(){
     const teamSize = 2;
-    const{ players, setPlayers, teamsFinish, setTeamsFinish, matchs, setMatchs, nbrDraw, setNbrDraw, setDrawCompetition, drawCompetition, setCompetition, competition, numberCompetition,setNumberCompetition} = useContext(AppContext);
+    const{ players, setPlayers, teamsFinish, setTeamsFinish, matchs, setMatchs, nbrDraw, setNbrDraw, setDrawCompetition, drawCompetition, setCompetition, competition, numberCompetition,setNumberCompetition, deleteCompetition, addAllParticipations} = useContext(AppContext);
     let teams = [];
     let currentTeam = [];
     let newMatch=[];
@@ -162,6 +162,7 @@ function Tirage(){
     
             setMatchs(newMatch);
             if(competition){
+                // si compétition, on enregistre les tirages
                 setDrawCompetition([...drawCompetition, newMatch]);
             }
         }
@@ -265,9 +266,10 @@ function Tirage(){
             //  on supprime le concours lancé si il n'a eu que le tirage qu'on a annulé
             if(nbrDraw - 1 === 0  && competition){
                 setCompetition(false)
-                setDrawCompetition(false);
-                // supprimer le concours lancé avec requéte avec l'id qu'on arécupérer
-                setNumberCompetition(false)
+                setDrawCompetition([]);
+                // supprimer le concours lancé avec requéte avec l'id qu'on a récupérer
+                deleteCompetition(numberCompetition);
+                setNumberCompetition(0)
                 // si eu plusieur tirage ont annule juste le précédent
             }else if (nbrDraw - 1 > 0 && competition){
                 // on enléve le tirage enregistrer
@@ -334,7 +336,7 @@ function Tirage(){
                             <Col>
                             <h1 className="mb-3">Vous n'avez pas encore lancer de tirage.</h1>
                             <p className="mb-3 text-danger">{error} </p>
-                            <Button className="m-3 mx-5" variant="primary" size="lg" onClick={createTeams}>{competition ? "Lancer le tirage ":"Tirage d'entraînement" }</Button>
+                            <Button className="m-3 mx-5" variant={competition ? "warning":"primary"} size="lg" onClick={createTeams}>{competition ? "Lancer le tirage ":"Tirage d'entraînement" }</Button>
                             </Col>
                         </Row>
                             <BtnTirageConcours createTeams={createTeams}/>

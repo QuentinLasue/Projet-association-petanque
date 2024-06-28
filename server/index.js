@@ -34,6 +34,8 @@ const login = require("./routes/login");
 app.use("/login", login);
 const concours = require("./routes/competition");
 app.use("/competition", concours);
+const participe = require("./routes/participe");
+app.use("/participe", participe)
 
 // Middleware pour les routes non trouvées (404)
 app.use((req, res, next) => {
