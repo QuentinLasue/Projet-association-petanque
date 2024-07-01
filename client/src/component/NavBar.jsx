@@ -31,23 +31,30 @@ function NavBar() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link >
+          <Nav className="me-auto d-flex ">
+            <Nav.Link>
                 <Link to="/">
                     <Button>Liste des joueurs</Button>
                 </Link>
             </Nav.Link>
-            <Nav.Link>
+            <Nav.Link  >
                 <Link to="/tirage">
                     <Button>Tirage</Button>
                 </Link>
             </Nav.Link>
             {!loggedIn ? (""):(
-            <Nav.Link>
-                <Link to="/admin">
-                    <Button>Liste des membres</Button>
-                </Link>
-            </Nav.Link>
+              <>
+              <Nav.Link>
+                  <Link to="/admin">
+                      <Button>Liste des membres</Button>
+                  </Link>
+              </Nav.Link>
+              <Nav.Link>
+                  <Link to="/admin/competition/resultat">
+                      <Button>Résultats</Button>
+                  </Link>
+              </Nav.Link>
+              </>
                     )}
           </Nav>
           <Nav>

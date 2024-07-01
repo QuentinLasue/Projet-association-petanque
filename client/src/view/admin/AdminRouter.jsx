@@ -4,6 +4,7 @@ import ListeMembres from "./ListeMembers";
 import UpdateMember from "./UpdateMember";
 import AddMember from "./AddMember";
 import Error from "../Error";
+import AddResultCompetition from "./addResultCompetition";
 
 function AdminRouter (){
     return (
@@ -12,6 +13,7 @@ function AdminRouter (){
             <Route path="/nouvelUtilisateur" element={<AddUser/>} />
             <Route path="/modifier/:numero"  element={<UpdateMember/>}/>
             <Route path="/ajoutJoueur"  element={<AddMember/>}/>
+            <Route path="/competition/resultat" element={<AddResultCompetition/>} />
             <Route path="/*" element={<Error/>}></Route> 
         </Routes>
     );

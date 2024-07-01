@@ -1,5 +1,5 @@
 import { Card, Col, ListGroup} from "react-bootstrap";
-function MatchCardList({matchs, teamsFinish}){
+function MatchCardList({matchs}){
     return (
         <>
         {
