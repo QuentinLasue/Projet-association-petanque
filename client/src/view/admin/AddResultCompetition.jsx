@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AppContext } from "../../appContext/AppContext";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import DrawListResult from "../../component/DrawListResult";
 
@@ -11,12 +11,18 @@ function AddResultCompetition(){
     return (
         <>
         { drawCompetition.length ? (
-            <Row>
+            <Container>
                 {drawCompetition.map((draw, index)=>(
-                    <DrawListResult draw={draw} key={index}/>
+                    <Row>
+                        <Form>
+                            <h3>Tirage n°{index+1}</h3>
+                            <DrawListResult draw={draw} key={index}/>
+                            <Button>Envoyer les résultats du tirage n°{index +1}</Button>
+                        </Form>
+                    </Row>
                 ))}
 
-            </Row>
+            </Container>
         ):(
             <Row>
                 <Col>

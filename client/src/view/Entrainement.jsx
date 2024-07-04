@@ -4,6 +4,7 @@ import { Button, Container, Row, Table, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormNumberPlayer from "../component/FromNumberPlayer";
 import { AppContext } from "../appContext/AppContext";
+
 function Entrainement(){
     const[numberPlayer, setNumberPlayer] = useState('');
     // variable ou l'on stock les joueurs de la partie

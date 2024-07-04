@@ -32,11 +32,11 @@ function AddMember(){
             setError("Le numéro ne peut comporter que des chiffres");
             return false;
         }
-        if(!/^(?=.*[a-zA-ZÀ-ÖØ-öø-ÿ])[a-zA-ZÀ-ÖØ-öø-ÿ'-]*$/.test(newMember.name)){
+        if(!/^(?=.*[a-zA-ZÀ-ÖØ-öø-ÿ])[a-zA-ZÀ-ÖØ-öø-ÿ-]*$/.test(newMember.name)){
             setError("Le nom ne doit contenir que des lettres avec un apostrophe ou un tiret.");
             return false;
         }
-        if(!/^(?=.*[a-zA-ZÀ-ÖØ-öø-ÿ])[a-zA-ZÀ-ÖØ-öø-ÿ'-]*$/.test(newMember.firstName)){
+        if(!/^(?=.*[a-zA-ZÀ-ÖØ-öø-ÿ])[a-zA-ZÀ-ÖØ-öø-ÿ-]*$/.test(newMember.firstName)){
             setError("Le prénom ne doit contenir que des lettres avec un apostrophe ou un tiret.");
             return false;
         }

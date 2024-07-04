@@ -46,7 +46,7 @@ router.get("/:numero", (request, response) => {
 // pour ajouter un membre
 router.post("/addMember", verifyToken, (request, response) => {
   const { name, firstName, number } = request.body;
-  try {
+  
     // Vérifier si le membre avec ce numéro existe déjà
     connection.query(
       "SELECT * FROM membre WHERE numero = ?",
@@ -86,17 +86,10 @@ router.post("/addMember", verifyToken, (request, response) => {
         }
       }
     );
-  } catch (error) {
-    console.log("Erreur lors de l'ajout du membre :", error);
-    response.status(500).json({
-      error: "Erreur interne du serveur lors de l'ajout du membre.",
-    });
-  }
 });
 // pour modifier un membre
 router.post("/updateMember", verifyToken, (request, response) => {
   const { nom, prenom, numero, oldNumero } = request.body;
-  try {
     if(numero != oldNumero){
       // Vérifier si le membre avec ce numéro existe déjà
       connection.query(
@@ -139,7 +132,7 @@ router.post("/updateMember", verifyToken, (request, response) => {
           }
         }
       );
-    }else{
+     }else{
       connection.query(
         "UPDATE membre SET numero = ?, nom = ? , prenom = ? WHERE numero = ?",
         [numero, nom, prenom, oldNumero],
@@ -161,12 +154,6 @@ router.post("/updateMember", verifyToken, (request, response) => {
         }
       );
     }
-  } catch (error) {
-    console.log("Erreur lors de la modification du membre :", error);
-    response.status(500).json({
-      error: "Erreur interne du serveur lors de la modification du membre.",
-    });
-  }
 });
 // Pour supprimer un membre
 router.delete("/delete", verifyToken, (request, response) => {
@@ -225,7 +212,6 @@ router.delete("/delete", verifyToken, (request, response) => {
 router.get("/search/liste", verifyToken, (request, response) => {
   const { searchValue } = request.query; // ou request.query pour get
   const searchPattern = `%${searchValue}%`;
-  try {
     connection.query(
       "SELECT * FROM membre WHERE nom LIKE ? OR prenom LIKE ? OR numero LIKE ?",
       [searchPattern, searchPattern, searchValue],
@@ -242,12 +228,7 @@ router.get("/search/liste", verifyToken, (request, response) => {
         response.json(rows);
       }
     );
-  } catch (error) {
-    console.log("Erreur lors de la recherche de membre : ", error);
-    response.status(500).json({
-      error: "Erreur interne du serveur lors de la recherche de membre.",
-    });
-  }
+
 });
 
 // Permet d'exporter le module pour être réutilisable dans un autre fichier

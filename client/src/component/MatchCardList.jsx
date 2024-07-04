@@ -1,7 +1,7 @@
-import { Card, Col, ListGroup} from "react-bootstrap";
+import { Card, Col, Row, ListGroup} from "react-bootstrap";
 function MatchCardList({matchs}){
     return (
-        <>
+        <Row className="justify-content-center mb-3">
         {
             matchs.map((match,index)=>(
                 <Col md={5} className="mb-3 d-flex justify-content-center" key={index}>
@@ -13,7 +13,7 @@ function MatchCardList({matchs}){
                         ))}
                     </ListGroup>
                 </Card>
-                    <div className="d-flex align-items-center justify content center mx-2">
+                    <div className="d-flex align-items-center mx-2">
                         <h2 className="fw-bold fst-italic">Vs</h2>
                     </div>
                 <Card  border="primary" className="w-50 p-0">
@@ -26,7 +26,7 @@ function MatchCardList({matchs}){
                 </Card>
                 </Col>
         ))}
-        </>
+        </Row>
     )
 }
 export default MatchCardList;

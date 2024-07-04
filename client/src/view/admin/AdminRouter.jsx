@@ -4,7 +4,7 @@ import ListeMembres from "./ListeMembers";
 import UpdateMember from "./UpdateMember";
 import AddMember from "./AddMember";
 import Error from "../Error";
-import AddResultCompetition from "./addResultCompetition";
+import AddResultCompetition from "./AddResultCompetition";
 
 function AdminRouter (){
     return (
