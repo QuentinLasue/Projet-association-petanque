@@ -30,5 +30,5 @@
  .custom-radio .form-check-input{
   width: 30px;
   height: 30px;
-  border-color: #0d6efd;
+  border: 2px solid #0d6efd;
 }
