@@ -3,13 +3,16 @@ import TeamListResult from "./TeamListResult";
 
 function MatchListResult({matchs, drawIndex, matchIndex, value, handleChange}){
     // On envoi chaque équipe du match du tirage
+
+    const matchNumber = matchIndex.split('-')[1];
+
     return(
         <Row className="justify-content-center">
             {/* {Object.values(matchs).map((match,index)=>(
                 <> */}
                 <Col  md={6} className="mb-3">
                 <Row>
-                    <p>Vainqueur match n°{matchIndex}</p>
+                    <p>Vainqueur match n°{matchNumber}</p>
                 </Row>
                 <Row>
                     <Col className="mb-3">

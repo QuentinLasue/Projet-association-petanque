@@ -30,9 +30,45 @@ function AddResultCompetition(){
 
     const handleSubmit = (event)=>{
         event.preventDefault();
-        console.log(results);
+        // console.log(results[0]["match-1"][0].id_membre);
+        // console.log(results);
+        // console.log(results.length);
+        const listWinner = extractIdMembre(results);
+        console.log(listWinner);
+        if(Array.isArray(listWinner)){
+
+        }else{
+            // gérer le cas ou listWinner est le msg d'erreur de resultats manquant 
+        }
     }
 
+    function extractIdMembre(results) {
+        let idMembres =[];
+        //Parcours chaque clé dans results
+        for(let key in results){
+            let numericKey = parseInt(key)
+            let matches = results[key];
+            // Parcours chaque match dans chaque objet 
+            for (let matchKey in matches){
+                let matchArray = matches[matchKey];
+
+                // Vérification si matchArray est un tableau (donc que les resultats on étéait envoyer)
+            if(Array.isArray(matchArray)){
+                // Parcours chaque objet dans matchArray
+                matchArray.forEach(item=>{
+                    if(item && item.id_membre !== undefined){
+                        // Ajoute les numéro des joueurs gagnant au tableau
+                        idMembres.push(item.id_membre);
+                    }
+                })
+            }else{
+                let error = `Résultat manquant pour le tirage n°${numericKey+1} pour le match n°${matchKey}`
+                return error;
+            }
+            }
+        }
+        return idMembres;
+    }
     return (
         <>
         { drawCompetition.length ? (
@@ -51,6 +87,7 @@ function AddResultCompetition(){
                         </Form>
                     </Row>
                 ))}
+                {/* <Button variant="warning">Finaliser l'envoi des résultats</Button> */}
             </Container>
         ):(
             <Row>
