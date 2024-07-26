@@ -7,6 +7,7 @@ import DrawListResult from "../../component/DrawListResult";
 
 function AddResultCompetition(){
     const {drawCompetition, setDrawCompetition }=useContext(AppContext);
+    const [submittedForms, setSubmittedForms] = useState(JSON.parse(localStorage.getItem('submittedForms')) || []);
     const [error, setError]= useState("");
     const [success, setSuccess]= useState("");
 
@@ -23,11 +24,13 @@ function AddResultCompetition(){
 
     const [results, setResults]= useState(initialResultsState);
     const [finalResults, setFinalResults]= useState(initialResultsState); 
+
     // sauvegarde dans le localstorage a chaque envoi des resultats
     useEffect(() => {
-      localStorage.setItem('results', JSON.stringify(finalResults))
+      localStorage.setItem('results', JSON.stringify(finalResults));
+      localStorage.setItem('submittedForms', JSON.stringify(submittedForms));
 
-    }, [finalResults]);
+    }, [finalResults, submittedForms]);
     
 
     const handleChange = (drawIndex, matchIndex, value)=>{
@@ -53,14 +56,17 @@ function AddResultCompetition(){
         }
 
         if(allFieldsFilled){
-            // enregistrer les résultats
-            setFinalResults(results);
-            //faire disparaitre le tirage qui a était envoyé.
-            setSuccess(`Les résultats du tirage n°${index+1} ont été envoyé.`)
+            const confirmation = window.confirm(`Êtes-vous sûr de vouloir soumettre les résultats du tirage n°${index+1}?`);
+            if(confirmation){
+                // enregistrer les résultats
+                setFinalResults(results);
+                // faire disparaitre le tirage qui a était envoyé.
+                setSuccess(`Les résultats du tirage n°${index+1} ont été envoyé.`);
+                setSubmittedForms([...submittedForms, index]);
+            }
         }else{
-            setError(`Les résultats entrée ne sont pas complet pour le tirage n°${index+1}.`)
+            setError(`Les résultats entrée ne sont pas complet pour le tirage n°${index+1}.`);
         }
-        // Sinon message d'erreur ?
     }
     const handleSend = (event)=>{
         event.preventDefault();
@@ -70,6 +76,9 @@ function AddResultCompetition(){
         console.log(listWinner);
         if(Array.isArray(listWinner)){
             console.log('resultat ok');
+            // Enregistrer toutes  les participations dans le concours en BDD
+            // Ajoutez les Victoire aux membres qui ont gagner 
+            setSuccess("Les résultats du concours ont était enregistré.")
         }else{
             // gérer le cas ou listWinner est le msg d'erreur de resultats manquant 
             setError(listWinner);
@@ -105,11 +114,12 @@ function AddResultCompetition(){
     }
     return (
         <>
-        { drawCompetition.length ? (
+            {error && <p style={{ color: 'red' }} className="mb-3">{error}</p>}
+            {success && <p style={{ color: 'green' }} className="mb-3">{success}</p>}
+            { drawCompetition.length ? (
             <Container>
-                {error && <p style={{ color: 'red' }} className="mb-3">{error}</p>}
-                {success && <p style={{ color: 'green' }} className="mb-3">{success}</p>}
                 {drawCompetition.map((draw, index)=>(
+                    !submittedForms.includes(index) &&
                     <Row className="mb-3" key={index}>
                         <Form onSubmit={(event)=>{
                                 event.preventDefault();
