@@ -21,7 +21,6 @@ function AddResultCompetition(){
         });
         return acc;
     },{});
-
     const [results, setResults]= useState(initialResultsState);
     const [finalResults, setFinalResults]= useState(initialResultsState); 
 
@@ -68,24 +67,47 @@ function AddResultCompetition(){
             setError(`Les résultats entrée ne sont pas complet pour le tirage n°${index+1}.`);
         }
     }
+
     const handleSend = (event)=>{
         event.preventDefault();
         setError('');
         setSuccess('');
-        const listWinner = extractIdMembre(results);
-        console.log(listWinner);
+        const listWinner = extractIdMembreWinner(results);
         if(Array.isArray(listWinner)){
-            console.log('resultat ok');
-            // Enregistrer toutes  les participations dans le concours en BDD
-            // Ajoutez les Victoire aux membres qui ont gagner 
-            setSuccess("Les résultats du concours ont était enregistré.")
+            const confirmation = window.confirm(`Êtes-vous sûr de vouloir finaliser les résultats de ce concours ? Une fois finalisé, le concours seras terminé vous ne pourrez pas ajoutez d'autre résultats`);
+            if(confirmation){
+                const listParticipants = extractIdMembreParticipant(drawCompetition);
+                console.log(listParticipants);
+                // Enregistrer toutes  les participations dans le concours en BDD (récupérer tous les id des participants)
+                // Ajoutez les Victoire aux membres qui ont gagner 
+
+                setSuccess("Les résultats du concours ont était enregistré.")
+                // Après traitement executer effacer le concours encours 
+            }
         }else{
             // gérer le cas ou listWinner est le msg d'erreur de resultats manquant 
             setError(listWinner);
         }
     }
 
-    function extractIdMembre(results) {
+    function extractIdMembreParticipant(drawCompetition){
+        let idParticipants =[];
+        // parcours les tirage, les matchs et les équipes pour récupérer les id de tous les joueurs
+        drawCompetition.forEach(draw => {
+            draw.forEach(match => {
+                match.team1.forEach(member => {
+                    idParticipants.push(member.id_membre);
+                });
+                match.team2.forEach(member => {
+                    idParticipants.push(member.id_membre);
+                });
+            });
+        });
+
+        return idParticipants;
+    }
+
+    function extractIdMembreWinner(results) {
         let idMembres =[];
         //Parcours chaque clé dans results
         for(let key in results){
