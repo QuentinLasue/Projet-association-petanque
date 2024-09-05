@@ -9,7 +9,7 @@ import axios from "axios";
 
 
 function AddResultCompetition(){
-    const {drawCompetition, setDrawCompetition, numberCompetition }=useContext(AppContext);
+    const {drawCompetition, setDrawCompetition, numberCompetition, setPlayers,setMatchs, setNbrDraw, setTeamsFinish, setNumberCompetition, setCompetition  }=useContext(AppContext);
     const [submittedForms, setSubmittedForms] = useState(JSON.parse(localStorage.getItem('submittedForms')) || []);
     const [error, setError]= useState("");
     const [success, setSuccess]= useState("");
@@ -79,27 +79,18 @@ function AddResultCompetition(){
         setSuccess('');
         const listWinner = extractIdMembreWinner(results);
         if(Array.isArray(listWinner)){
-            const confirmation = window.confirm(`Êtes-vous sûr de vouloir finaliser les résultats de ce concours ? Une fois finalisé, le concours seras terminé vous ne pourrez pas ajoutez d'autre résultats`);
+            const confirmation = window.confirm(`Êtes-vous sûr de vouloir finaliser les résultats de ce concours ? Une fois finalisé, le concours seras terminé vous ne pourrez pas ajoutez d'autre résultats, la liste des joueurs et les tirage eront effacé également.`);
             if(confirmation){
                 const listParticipants = extractIdMembreParticipant(drawCompetition);
-                // console.log(listParticipants);
-                // console.log(listWinner);
                 listParticipants.forEach(participant =>{
                     addGame(participant, numberCompetition);
-                    console.log(participant + "OK");
-                    
                 })
                 listWinner.forEach(winner=>{
                     addWin(winner,numberCompetition);
-                    console.log(winner +"win");
-                    
                 })
-
-                // Enregistrer toutes  les participations dans le concours en BDD (récupérer tous les id des participants)
-                // Ajoutez les Victoire aux membres qui ont gagner 
-
                 setSuccess("Les résultats du concours ont était enregistré.")
-                // Après traitement executer effacer le concours encours 
+                // Après traitement executer effacer le concours encours
+                handleDeleteAll(); 
             }
         }else{
             // gérer le cas ou listWinner est le msg d'erreur de resultats manquant 
@@ -173,6 +164,18 @@ function AddResultCompetition(){
         } catch (error) {
             console.log('Erreur lors de la création de la partie supplémentaire :', error);
         }
+    }
+    const handleDeleteAll = ()=>{
+        // on reset tout a leurs valeurs par default
+            setPlayers([]);
+            setMatchs([]);
+            setNbrDraw(0);
+            setTeamsFinish([]);
+            setDrawCompetition([]);
+            setCompetition(false);
+            setNumberCompetition(0);
+            setSubmittedForms([]);
+            setError("");
     }
     return (
         <>
