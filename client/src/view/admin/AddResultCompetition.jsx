@@ -176,6 +176,7 @@ function AddResultCompetition(){
             setNumberCompetition(0);
             setSubmittedForms([]);
             setError("");
+            setResults({});
     }
     return (
         <>
