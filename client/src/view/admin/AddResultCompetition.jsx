@@ -3,13 +3,18 @@ import { AppContext } from "../../appContext/AppContext";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import DrawListResult from "../../component/DrawListResult";
+import { AuthContext } from "../../Auth/AuthContext";
+
+import axios from "axios";
 
 
 function AddResultCompetition(){
-    const {drawCompetition, setDrawCompetition }=useContext(AppContext);
+    const {drawCompetition, setDrawCompetition, numberCompetition }=useContext(AppContext);
     const [submittedForms, setSubmittedForms] = useState(JSON.parse(localStorage.getItem('submittedForms')) || []);
     const [error, setError]= useState("");
     const [success, setSuccess]= useState("");
+    const {getHeaders}=useContext(AuthContext);
+    const headers = getHeaders();
 
     const initialResultsState = drawCompetition.reduce((acc, draw, index)=>{
         const savedResults =JSON.parse(localStorage.getItem('results'))|| {};
@@ -77,7 +82,19 @@ function AddResultCompetition(){
             const confirmation = window.confirm(`Êtes-vous sûr de vouloir finaliser les résultats de ce concours ? Une fois finalisé, le concours seras terminé vous ne pourrez pas ajoutez d'autre résultats`);
             if(confirmation){
                 const listParticipants = extractIdMembreParticipant(drawCompetition);
-                console.log(listParticipants);
+                // console.log(listParticipants);
+                // console.log(listWinner);
+                listParticipants.forEach(participant =>{
+                    addGame(participant, numberCompetition);
+                    console.log(participant + "OK");
+                    
+                })
+                listWinner.forEach(winner=>{
+                    addWin(winner,numberCompetition);
+                    console.log(winner +"win");
+                    
+                })
+
                 // Enregistrer toutes  les participations dans le concours en BDD (récupérer tous les id des participants)
                 // Ajoutez les Victoire aux membres qui ont gagner 
 
@@ -133,6 +150,29 @@ function AddResultCompetition(){
             }
         }
         return idMembres;
+    }
+
+    const addGame = async (participant, competitionNumber)=>{
+        try {
+            const response = await axios.post(`http://localhost:5000/participe/addGame`,{
+                id_membre: participant,
+                id_concours: competitionNumber
+            },
+            {headers});
+        } catch (error) {
+            console.log('Erreur lors de la création de la partie supplémentaire :', error);
+        }
+    }
+    const addWin = async (winner, competitionNumber) =>{
+        try {
+            const response = await axios.post(`http://localhost:5000/participe/addWin`,{
+                id_membre: winner,
+                id_concours: competitionNumber
+            },
+            {headers});
+        } catch (error) {
+            console.log('Erreur lors de la création de la partie supplémentaire :', error);
+        }
     }
     return (
         <>
